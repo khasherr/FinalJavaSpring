@@ -1,0 +1,22 @@
+<head th:replace="layout :: head"></head>
+<body>
+
+<!--I made a layout file that has navbar and we used th:replace to import that file into there navbar = th:fragment
+it is a nav thats why we used <nav if it was div we would <div -->
+<nav th:replace="layout :: navbar"></nav>
+
+<br> <br> 
+
+
+
+
+<div class="jumbotron">
+  <h1 class="display-4">Welcome </h1>
+  <p class="lead">Working passionately to understand and resolve healthcare needs of people in Canada.</p>
+  <hr class="my-4">
+  <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+</div>
+
+
+</body>
+</html>
