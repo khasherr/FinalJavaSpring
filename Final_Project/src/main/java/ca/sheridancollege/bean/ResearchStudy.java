@@ -30,6 +30,7 @@ public class ResearchStudy {
 	private long researchStudyId; 
 	private String researchDuration;
 	private String researchArea; 
+	private String researchTitle;
 	
 	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST},
 			fetch=FetchType.LAZY) 
