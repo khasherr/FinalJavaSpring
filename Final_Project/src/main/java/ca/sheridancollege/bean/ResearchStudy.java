@@ -1,5 +1,6 @@
 package ca.sheridancollege.bean;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -27,12 +28,14 @@ import lombok.NoArgsConstructor;
 public class ResearchStudy {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long researchStudyId; 
+	private Integer researchStudyId; 
 	private String researchTitle;
 	private String researchArea; 
 	private String researchInstitution;
 	private String researchDuration;
 	private String postedBy;
+	private String postedDate;
+	private String researchDetail;
 	
 	
 	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST},
@@ -42,6 +45,10 @@ public class ResearchStudy {
 	inverseJoinColumns=@JoinColumn(name="researchStudy_id")
 	)
 	private List<Researcher> researchers;
+	
+	
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private List<Application> applications;
 	
 
 }

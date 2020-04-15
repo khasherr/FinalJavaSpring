@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import ca.sheridancollege.bean.ResearchStudy;
 
-public interface ResearchStudyRepository extends CrudRepository<ResearchStudy, Long>{
+public interface ResearchStudyRepository extends CrudRepository<ResearchStudy, Integer>{
 	
 }

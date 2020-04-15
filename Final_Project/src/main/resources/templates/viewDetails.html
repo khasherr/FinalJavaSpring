@@ -1,0 +1,55 @@
+<head th:replace="layout :: head"></head>
+
+
+<body>
+
+	<nav th:replace="layout :: navbar-studiesSelected"></nav>
+
+	<br>
+
+	<div class="jumbotron">
+		<h1 class="display-4" th:text="${research.researchTitle}"></h1>
+		<p class="lead"
+			th:text="'Posted by' + ${research.postedBy} + ', ' + ${research.postedDate}"></p>
+		<hr class="my-4">
+		<table class="table">
+			<tbody>
+				<tr>
+					<th>Research Area</th>
+					<td th:text="${research.researchArea}"></td>
+				</tr>
+				<tr>
+					<th>Research Institution</th>
+					<td th:text="${research.researchInstitution}"></td>
+				</tr>
+				<tr>
+					<th>Research Duration</th>
+					<td th:text="${research.researchDuration}"></td>
+				</tr>
+				<tr>
+					<th>Research Details</th>
+					<td th:text="${research.researchDetail}"></td>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+		<blockquote class="blockquote">
+			<p class="mb-0">List of Researchers</p>
+		</blockquote>
+		<br>
+		<table class="table">
+			<tbody>
+				<tr th:each="r:${research.researchers}">
+					<td th:text="${r.researcherName}"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<br>
+
+		<form action="#" th:action="@{/studies}">
+			<input type="submit" value="Back" class="btn btn-primary">
+		</form>
+	</div>
+</body>
+</html>

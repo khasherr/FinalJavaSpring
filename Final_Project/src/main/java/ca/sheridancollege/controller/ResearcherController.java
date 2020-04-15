@@ -1,5 +1,8 @@
 package ca.sheridancollege.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +35,12 @@ public class ResearcherController {
 	
 	@GetMapping("/saveResearch")
 	public String saveResearch(Model model, @ModelAttribute ResearchStudy research) {
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
+		
+		Date date = new Date();
+		
+		research.setPostedDate(formatter.format(date));
 		
 		researchRepository.save(research);
 		
