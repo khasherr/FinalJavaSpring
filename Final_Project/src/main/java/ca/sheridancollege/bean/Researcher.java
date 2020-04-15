@@ -17,12 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Researchers {
+public class Researcher {
 	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long researchId; 
-	private String researchName; 
+	private long researcherId; 
+	private String researcherName; 
 
 }

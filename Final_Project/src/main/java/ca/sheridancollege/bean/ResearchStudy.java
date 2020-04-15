@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import ca.sheridancollege.bean.Researchers.ResearchersBuilder;
+import ca.sheridancollege.bean.Researcher.ResearcherBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,9 +28,12 @@ public class ResearchStudy {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long researchStudyId; 
-	private String researchDuration;
-	private String researchArea; 
 	private String researchTitle;
+	private String researchArea; 
+	private String researchInstitution;
+	private String researchDuration;
+	private String postedBy;
+	
 	
 	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST},
 			fetch=FetchType.LAZY) 
@@ -38,7 +41,7 @@ public class ResearchStudy {
 	joinColumns = @JoinColumn(name ="researchers_id"), 
 	inverseJoinColumns=@JoinColumn(name="researchStudy_id")
 	)
-	private List <Researchers> researchers;
+	private List<Researcher> researchers;
 	
 
 }

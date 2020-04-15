@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import ca.sheridancollege.bean.Researchers;
+import ca.sheridancollege.bean.Researcher;
 
 
-public interface ResearchersRepository extends CrudRepository<Researchers, Long> {
+public interface ResearchersRepository extends CrudRepository<Researcher, Long> {
 
 	@Override 
-	List<Researchers> findAll(); 
+	List<Researcher> findAll(); 
 }
