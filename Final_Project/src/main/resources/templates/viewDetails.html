@@ -10,7 +10,7 @@
 	<div class="jumbotron">
 		<h1 class="display-4" th:text="${research.researchTitle}"></h1>
 		<p class="lead"
-			th:text="'Posted by' + ${research.postedBy} + ', ' + ${research.postedDate}"></p>
+			th:text="'Posted by ' + ${research.postedBy} + ', ' + ${research.postedDate}"></p>
 		<hr class="my-4">
 		<table class="table">
 			<tbody>
@@ -29,6 +29,10 @@
 				<tr>
 					<th>Research Details</th>
 					<td th:text="${research.researchDetail}"></td>
+				</tr>
+				<tr>
+					<th>Number of Participants</th>
+					<td th:text="${research.numParticipants}"></td>
 				</tr>
 			</tbody>
 		</table>

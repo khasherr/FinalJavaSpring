@@ -36,6 +36,7 @@ public class ResearchStudy {
 	private String postedBy;
 	private String postedDate;
 	private String researchDetail;
+	private int numParticipants;
 	
 	
 	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST},

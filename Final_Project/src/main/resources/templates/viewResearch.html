@@ -12,17 +12,18 @@
 		<hr class="my-4">
 	</div>
 	<br>
-	<form class="form-inline">
-		<i class="fas fa-search" aria-hidden="true"></i> 
-		<input class="form-control form-control-sm ml-3 w-75" type="text"
-			placeholder="Search" aria-label="Search" name="search"> 
-		&nbsp;
-		<select name="criteria" class="form-control" id="sel1">
-			<option th:each="c:${criterias}" th:value="${c}"
-				th:text="${c}"></option>
-		</select>
-		&nbsp;
+	<form class="form-inline" action="#" th:action="@{/searchResearch}">
+		<i class="fas fa-search" aria-hidden="true"></i> <input
+			class="form-control form-control-sm ml-3 w-75" type="text"
+			placeholder="Search" aria-label="Search" name="search">
+		&nbsp; <select name="criteria" class="form-control" id="sel1">
+			<option th:each="c:${criterias}" th:value="${c}" th:text="${c}"></option>
+		</select> &nbsp;
 		<button type="submit" class="btn btn-primary">Search</button>
+	</form>
+	&nbsp;
+	<form action="#" th:action="@{/studies}">
+		<button type="submit" class="btn btn-primary">Clear Search Results</button>
 	</form>
 	<br>
 	<table class="table">
@@ -45,7 +46,8 @@
 				<td>
 					<form action="#"
 						th:action="@{/viewDetails/{researchid}(researchid=${r.researchStudyId})}">
-						<button type="submit" class="btn btn-primary">View Details</button>
+						<button type="submit" class="btn btn-primary">View
+							Details</button>
 					</form>
 				</td>
 				<td>
