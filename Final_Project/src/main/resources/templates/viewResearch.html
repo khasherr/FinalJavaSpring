@@ -1,0 +1,35 @@
+<head th:replace="layout :: head"></head>
+<body>
+
+<nav th:replace="layout :: navbar-studiesSelected"></nav>
+
+<body>
+
+	<div class="jumbotron">
+		<h1 class="display-4">Research List</h1>
+		<p class="lead">Search Research and Apply as a Research
+			Participant!</p>
+		<hr class="my-4">
+	</div>
+	<br>
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">Research Title</th>
+				<th scope="col">Research Institutions</th>
+				<th scope="col">Research Duration</th>
+				<th scope="col">Posted By</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="r:${researches}">
+				<td th:text="${r.researchTitle}"></td>
+				<td th:text="${r.researchInstitution}"></td>
+				<td th:text="${r.researchDuration}"></td>
+				<td th:text="${r.postedBy}"></td>
+			</tr>
+		</tbody>
+	</table>
+
+</body>
+</html>
