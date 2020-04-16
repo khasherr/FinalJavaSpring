@@ -1,5 +1,7 @@
 package ca.sheridancollege.bean;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,16 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Application {
+public class Researchers {
+	
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
-	private String title;
-	private String name;
-	private String qualification;
-	private String introduction;
-	
-	private int researchID;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long researchId; 
+	private String researchName; 
+
 }

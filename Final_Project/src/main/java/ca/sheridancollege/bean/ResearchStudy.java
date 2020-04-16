@@ -1,6 +1,5 @@
 package ca.sheridancollege.bean;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import ca.sheridancollege.bean.Researcher.ResearcherBuilder;
+import ca.sheridancollege.bean.Researchers.ResearchersBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,16 +27,9 @@ import lombok.NoArgsConstructor;
 public class ResearchStudy {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer researchStudyId; 
-	private String researchTitle;
-	private String researchArea; 
-	private String researchInstitution;
+	private long researchStudyId; 
 	private String researchDuration;
-	private String postedBy;
-	private String postedDate;
-	private String researchDetail;
-	private int numParticipants;
-	
+	private String researchArea; 
 	
 	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST},
 			fetch=FetchType.LAZY) 
@@ -45,11 +37,7 @@ public class ResearchStudy {
 	joinColumns = @JoinColumn(name ="researchers_id"), 
 	inverseJoinColumns=@JoinColumn(name="researchStudy_id")
 	)
-	private List<Researcher> researchers;
-	
-	
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	private List<Application> applications;
+	private List <Researchers> researchers;
 	
 
 }
