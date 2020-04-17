@@ -1,0 +1,45 @@
+<head th:replace="layout :: head"></head>
+<body>
+
+<nav th:replace="layout :: navbar-researchselected"></nav>
+
+<br>
+
+<div class="jumbotron">
+  <h1 class="display-4">Application List </h1>
+  <p class="lead">Manage applications for "<label th:text="${research.researchTitle}"></label>" </p>
+  <hr class="my-4">
+</div>
+
+<br>
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">Application Title</th>
+				<th scope="col">Applicant Name</th>
+				<th scope="col">Applied Date</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="a:${applications}">
+				<td th:text="${a.title}"></td>
+				<td th:text="${a.name}"></td>
+				<td th:text="${a.appliedDate}"></td>
+				<td>
+					<form action="#"
+						th:action="@{/viewApplication/{id}(id=${a.id})}">
+						<button type="submit" class="btn btn-primary">View
+							Application</button>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<form action="#" th:action="@{/manageResearch}">
+			<input type="submit" value="Back" class="btn btn-primary">
+		</form>
+
+</body>
+</html>

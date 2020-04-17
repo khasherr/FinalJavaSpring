@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<style>
+h1{
+    color: green;
+}
+h2{
+    color: blue;
+}
+</style>
+</head>
+<body>
+
+<h1 th:text="'Application result for ' + ${name} + '!'">Application result</h1>
+<div th:text="${message}">Some message</div>
+<div th:text="${footer}">Some Footer</div>
+
+</body>
+</html>

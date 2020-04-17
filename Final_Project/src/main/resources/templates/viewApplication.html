@@ -1,0 +1,48 @@
+<head th:replace="layout :: head"></head>
+
+<body>
+
+<nav th:replace="layout :: navbar-researchselected"></nav>
+
+<br>
+
+	<div class="jumbotron">
+		<h1 class="display-4" th:text="${app.title}"></h1>
+		<p class="lead" th:text="${app.name} + ', ' + ${app.appliedDate}">
+		</p>
+		<br>
+		<p class="lead" th:text="'Email: ' + ${app.email}">
+		<hr class="my-4">
+		<br>
+		<table class="table">
+			<tbody>
+				<tr>
+					<th>Introduction</th>
+					<td th:text="${app.introduction}"></td>
+				</tr>
+				<tr>
+					<th>Qualification</th>
+					<td th:text="${app.qualification}"></td>
+				</tr>
+				<tr>
+					<td><a class="btn btn-primary" href="/rejectApplication" role="button">Reject</a> &nbsp; 
+						<a class="btn btn-primary" href="/acceptApplication" role="button">Accept</a></td>
+				</tr>
+				<tr>
+					<td>
+						<form action="#"
+							th:action="@{/viewApplications/{researchid}(researchid=${researchid})}">
+							<input type="submit" value="Back" class="btn btn-primary">
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+
+	</div>
+
+	<br>
+
+</body>
+</html>
