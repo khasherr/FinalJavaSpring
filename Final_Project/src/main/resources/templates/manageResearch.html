@@ -31,6 +31,7 @@
 				<th scope="col">Posted Date</th>
 				<th></th>
 				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -48,6 +49,12 @@
 					<form action="#"
 						th:action="@{/viewApplications/{researchid}(researchid=${r.researchStudyId})}">
 						<button type="submit" class="btn btn-primary">View Applications</button>
+					</form>
+				</td>
+				<td>
+					<form action="#"
+						th:action="@{/deleteResearch/{researchid}(researchid=${r.researchStudyId})}">
+						<button type="submit" class="btn btn-primary">Delete</button>
 					</form>
 				</td>
 			</tr>

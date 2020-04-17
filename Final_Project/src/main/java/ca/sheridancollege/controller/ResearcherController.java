@@ -165,6 +165,37 @@ public class ResearcherController {
 		
 	}
 	
+	@GetMapping("/deleteResearch/{researchid}")
+	public String deleteResearch(Model model, @PathVariable int researchid, Authentication authentication) {
+
+		ResearchStudy research = researchRepository.findById(researchid).get();
+		
+		//Send cancellation mails to all applicants
+		
+		for (Application application : research.getApplications()) {
+			String msg = "Research Canceled\n" + "\nResearch Title: " + research.getResearchTitle()
+					+ "\nApplicant name: " + application.getName() + "\nAppication Title: " + application.getTitle();
+			try {
+				esi.sendMailWithInline(application.getEmail(), research.getResearchTitle() + " has been canceled", 
+						"Researva", msg, "Team Guacamole");
+			} catch (MessagingException e) {
+				System.out.println(e);
+			}
+			
+			applicationRepository.delete(application);
+		}
+		
+		
+		researchRepository.delete(research);
+
+		model.addAttribute("researches", researchRepository.findByUsername(authentication.getName()));
+
+		model.addAttribute("criterias", getCriterias());
+		
+		return "manageResearch.html";
+		
+	}
+	
 	@GetMapping("/updateResearch")
 	public String updateResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) {
 		
