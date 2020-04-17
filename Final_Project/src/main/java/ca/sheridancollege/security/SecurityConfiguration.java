@@ -5,12 +5,14 @@ package ca.sheridancollege.security;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -22,7 +24,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	DataSource dataSource;
   
 	@Autowired
-	BCryptPasswordEncoder bCryptPasswordEncoder;
+	WebConfig webConfig;
+
+	@Autowired
+	private LoginAccessDeniedHandler accessDeniedHandler;
+
+	@Autowired
+	private UserDetailsServiceImpl userDetailsService;
+	
+	/*
+	 * Codes for PostgreSQL
 	@Override 
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 	
@@ -37,19 +48,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		//get the roles associated with username - username and roles are columns . user_accounts is table name in postgres we defined
 		.authoritiesByUsernameQuery("select username, role " + "from user_accounts where username=?");
 	}
+	*/
 
 	//authorization-> what - add in ant matchers 
 	protected void configure(HttpSecurity http) throws Exception{ 
 		http.authorizeRequests()	
 		
-		.antMatchers("/research/new").hasRole("ADMIN")
+		.antMatchers("/registerResearch").hasRole("USER")
+		.antMatchers("/manageResearch").hasRole("USER")
 		//permit h2 console only if we are using h2-console
 		.antMatchers("/h2-console/**").permitAll()
 		.antMatchers("/").permitAll()
-		.antMatchers("/registerResearch").permitAll()
 		.and()
-		.formLogin();
-		
+			.formLogin()
+		.and()
+			.logout()
+			.invalidateHttpSession(true)
+			.clearAuthentication(true)
+			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+			.logoutSuccessUrl("/")
+			.permitAll()
+		.and()
+			.exceptionHandling()
+			.accessDeniedHandler(accessDeniedHandler);
 
 	http.csrf().disable();
 	http.headers().frameOptions().disable();
@@ -58,5 +79,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	
 	}
-
+	
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception{
+		
+		auth.userDetailsService(userDetailsService).passwordEncoder(webConfig.passwordEncoder());
+	}
 }

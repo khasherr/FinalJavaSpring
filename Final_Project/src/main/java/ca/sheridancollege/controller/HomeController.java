@@ -24,5 +24,12 @@ public class HomeController {
 		
 		return "learnMore.html";
 	}
+	
+	@GetMapping("/access-denied")
+	public String goaccessdenied() {
+		
+		return "access-denied.html";
+		
+	}
 
 }

@@ -8,4 +8,6 @@ import ca.sheridancollege.bean.UserAccount;
 
 public interface UserAccountRepository extends CrudRepository<UserAccount, Long> {
 
+	UserAccount findByUsername(String username);
+
 }

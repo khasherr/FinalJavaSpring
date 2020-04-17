@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import ca.sheridancollege.bean.UserAccount;
+import ca.sheridancollege.repository.RoleRepository;
 import ca.sheridancollege.repository.UserAccountRepository;
 
 
@@ -20,6 +21,9 @@ public class SecurityController {
 	
 	@Autowired 
 	UserAccountRepository accountRepo;
+	
+	@Autowired
+	private RoleRepository roleRepository;
 
 	//register
 	@GetMapping("/register")
@@ -40,6 +44,7 @@ public class SecurityController {
 	public String saveUser(Model model, UserAccount user) { 
 		//get the user password through lombok getter and setter
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		user.getRoles().add(roleRepository.findByRolename("ROLE_USER"));
 		accountRepo.save(user);
 		//
 		return "redirect:/";

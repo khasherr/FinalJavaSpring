@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.mail.MessagingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,13 +52,15 @@ public class ResearcherController {
 	}
 	
 	@GetMapping("/saveResearch")
-	public String saveResearch(Model model, @ModelAttribute ResearchStudy research) {
+	public String saveResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) {
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
 		
 		Date date = new Date();
 		
 		research.setPostedDate(formatter.format(date));
+		
+		research.setUsername(authentication.getName());
 		
 		researchRepository.save(research);
 		
@@ -67,9 +70,9 @@ public class ResearcherController {
 	}
 	
 	@GetMapping("/manageResearch")
-	public String manageResearch(Model model) {
+	public String manageResearch(Model model, Authentication authentication) {
 		
-		model.addAttribute("researches", researchRepository.findAll());
+		model.addAttribute("researches", researchRepository.findByUsername(authentication.getName()));
 		
 		model.addAttribute("criterias", getCriterias());
 		
@@ -94,33 +97,41 @@ public class ResearcherController {
 	}
 	
 	@GetMapping("/searchResearchManage")
-	public String searchManage(Model model, @RequestParam String search, @RequestParam String criteria) {
+	public String searchManage(Model model, @RequestParam String search, @RequestParam String criteria,
+			Authentication authentication) {
 		
 		if(criteria.equals("Research Title")) {
 
-			model.addAttribute("researches", researchRepository.findByResearchTitleContaining(search));
+			model.addAttribute("researches", researchRepository.
+					findByResearchTitleContainingAndUsername(search, authentication.getName()));
 		} else if(criteria.equals("Research Area")) {
 
-			model.addAttribute("researches", researchRepository.findByResearchAreaContaining(search));
+			model.addAttribute("researches", researchRepository.
+					findByResearchAreaContainingAndUsername(search, authentication.getName()));
 		}else if(criteria.equals("Research Institution")) {
 
-			model.addAttribute("researches", researchRepository.findByResearchInstitutionContaining(search));
+			model.addAttribute("researches", researchRepository.
+					findByResearchInstitutionContainingAndUsername(search, authentication.getName()));
 		}else if(criteria.equals("Research Duration")) {
 
-			model.addAttribute("researches", researchRepository.findByResearchDurationContaining(search));
+			model.addAttribute("researches", researchRepository.
+					findByResearchDurationContainingAndUsername(search, authentication.getName()));
 		}else if(criteria.equals("Researcher")) {
 
-			model.addAttribute("researches", researchRepository.findByPostedByContaining(search));
+			model.addAttribute("researches", researchRepository.
+					findByPostedByContainingAndUsername(search, authentication.getName()));
 		}else if(criteria.equals("Posted Date")) {
 
-			model.addAttribute("researches", researchRepository.findByPostedDateContaining(search));
+			model.addAttribute("researches", researchRepository.
+					findByPostedDateContainingAndUsername(search, authentication.getName()));
 		}else if(criteria.equals("Research Detail")) {
 
-			model.addAttribute("researches", researchRepository.findByResearchDetailContaining(search));
+			model.addAttribute("researches", researchRepository.
+					findByResearchDetailContainingAndUsername(search, authentication.getName()));
 		}else if(criteria.equals("Minimum Number of Participants")) {
 			try {
 				model.addAttribute("researches", researchRepository
-						.findByNumParticipantsGreaterThanEqual(Integer.parseInt(search)));
+						.findByNumParticipantsGreaterThanEqualAndUsername(Integer.parseInt(search), authentication.getName()));
 			} catch (Exception ex) {
 				System.out.println(ex.getMessage());
 			}
@@ -130,7 +141,7 @@ public class ResearcherController {
 
 			try {
 				model.addAttribute("researches", researchRepository
-						.findByNumParticipantsLessThanEqual(Integer.parseInt(search)));
+						.findByNumParticipantsLessThanEqualAndUsername(Integer.parseInt(search), authentication.getName()));
 			} catch (Exception ex) {
 				System.out.println(ex.getMessage());
 			}
@@ -155,11 +166,11 @@ public class ResearcherController {
 	}
 	
 	@GetMapping("/updateResearch")
-	public String updateResearch(Model model, @ModelAttribute ResearchStudy research) {
+	public String updateResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) {
 		
 		researchRepository.save(research);
 
-		model.addAttribute("researches", researchRepository.findAll());
+		model.addAttribute("researches", researchRepository.findByUsername(authentication.getName()));
 
 		model.addAttribute("criterias", getCriterias());
 		
