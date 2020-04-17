@@ -25,6 +25,10 @@ public class Application {
 	private String name;
 	private String qualification;
 	private String introduction;
+	private String appliedDate;
+	private String email;
+	//Values: "Accepted", "Rejected", "Not Decided"
+	private String state;
 	
 	private int researchID;
 }

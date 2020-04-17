@@ -1,6 +1,8 @@
 package ca.sheridancollege.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -75,8 +77,20 @@ public class ResearchController {
 	@GetMapping("/saveApplication")
 	public String saveApplication(Model model, @ModelAttribute Application application) {
 		
+		//Set applied date
+		SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
+
+		Date date = new Date();
 		
+		application.setAppliedDate(formatter.format(date));
+		
+		//Set state
+		
+		application.setState("Not Decided");
+		
+		//Save
 		applicationRepository.save(application);
+		
 		
 		ResearchStudy research = researchRepository.findById(application.getResearchID()).get();
 		
@@ -85,6 +99,8 @@ public class ResearchController {
 		researchRepository.save(research);
 
 		model.addAttribute("researches", researchRepository.findAll());
+
+		model.addAttribute("criterias", getCriterias());
 		
 		return "viewResearch.html";
 	}

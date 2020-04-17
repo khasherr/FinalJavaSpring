@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResearchStudy {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //GenerationType.AUTO
 	private Integer researchStudyId; 
 	private String researchTitle;
 	private String researchArea; 
