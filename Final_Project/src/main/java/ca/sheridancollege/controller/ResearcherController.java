@@ -24,6 +24,7 @@ import ca.sheridancollege.repository.ResearchStudyRepository;
 @Controller 
 public class ResearcherController {
 
+	//Variables
 	@Autowired
 	private ResearchStudyRepository researchRepository;
 
@@ -36,12 +37,14 @@ public class ResearcherController {
 	private int applicationid = 0;
 	private int researchid = 0;
 	
+	//Researcher Home
 	@GetMapping("/researchers")
 	public String goResearcherHome() {
 		
 		return "ResearcherHome.html";
 	}
 	
+	//Register research
 	@GetMapping("/registerResearch")
 	public String registerResearch(Model model) {
 		
@@ -69,6 +72,8 @@ public class ResearcherController {
 		return "registerResearch.html";
 	}
 	
+	//Manage registered research
+	//Users can only view researches they registered
 	@GetMapping("/manageResearch")
 	public String manageResearch(Model model, Authentication authentication) {
 		
@@ -79,6 +84,7 @@ public class ResearcherController {
 		return "manageResearch.html";
 	}
 	
+	//Search criterias
 	private ArrayList<String> getCriterias() {
 
 		ArrayList<String> criterias = new ArrayList<>();
@@ -96,6 +102,7 @@ public class ResearcherController {
 		return criterias;
 	}
 	
+	//Search registered researches
 	@GetMapping("/searchResearchManage")
 	public String searchManage(Model model, @RequestParam String search, @RequestParam String criteria,
 			Authentication authentication) {
@@ -128,6 +135,7 @@ public class ResearcherController {
 
 			model.addAttribute("researches", researchRepository.
 					findByResearchDetailContainingAndUsername(search, authentication.getName()));
+			
 		}else if(criteria.equals("Minimum Number of Participants")) {
 			try {
 				model.addAttribute("researches", researchRepository
@@ -150,10 +158,11 @@ public class ResearcherController {
 		}
 
 		model.addAttribute("criterias", getCriterias());
-
+		
 		return "manageResearch.html";
 	}
 	
+	//Edit research
 	@GetMapping("/editResearch/{researchid}")
 	public String editResearch(Model model, @PathVariable int researchid) {
 		
@@ -165,6 +174,7 @@ public class ResearcherController {
 		
 	}
 	
+	//Delete research
 	@GetMapping("/deleteResearch/{researchid}")
 	public String deleteResearch(Model model, @PathVariable int researchid, Authentication authentication) {
 
@@ -196,6 +206,7 @@ public class ResearcherController {
 		
 	}
 	
+	//Update research
 	@GetMapping("/updateResearch")
 	public String updateResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) {
 		
@@ -208,6 +219,7 @@ public class ResearcherController {
 		return "manageResearch.html";
 	}
 	
+	//View applications of a selected research
 	@GetMapping("/viewApplications/{researchid}")
 	public String viewApplications(Model model, @PathVariable int researchid) {
 		
@@ -222,6 +234,7 @@ public class ResearcherController {
 		return "viewApplications.html";
 	}
 	
+	//View selected application
 	@GetMapping("/viewApplication/{id}")
 	public String viewApplication(Model model, @PathVariable int id) {
 		
@@ -236,6 +249,7 @@ public class ResearcherController {
 		
 	}
 	
+	//Reject application
 	@GetMapping("/rejectApplication")
 	public String rejectApplication(Model model) {
 
@@ -270,6 +284,7 @@ public class ResearcherController {
 		return "viewApplications.html";
 	}
 	
+	//Accept application
 	@GetMapping("/acceptApplication")
 	public String acceptApplication(Model model) {
 

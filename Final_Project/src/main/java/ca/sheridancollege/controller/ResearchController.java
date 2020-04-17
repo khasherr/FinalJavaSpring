@@ -21,6 +21,7 @@ import ca.sheridancollege.repository.ResearchersRepository;
 @Controller
 public class ResearchController {
 	
+	//Variables
 	@Autowired
 	private ResearchStudyRepository researchRepository;
 	
@@ -30,6 +31,7 @@ public class ResearchController {
 	@Autowired
 	private ApplicationRepository applicationRepository;
 	
+	//List researches
 	@GetMapping("/studies")
 	public String listResearch(Model model) {
 		
@@ -40,6 +42,7 @@ public class ResearchController {
 		return "viewResearch.html";
 	}
 
+	//Search criterias
 	private ArrayList<String> getCriterias() {
 
 		ArrayList<String> criterias = new ArrayList<>();
@@ -57,6 +60,7 @@ public class ResearchController {
 		return criterias;
 	}
 	
+	//Apply to a research
 	@GetMapping("/apply/{researchid}")
 	public String apply(Model model, @PathVariable int researchid) {
 		
@@ -66,6 +70,7 @@ public class ResearchController {
 		
 		Application application = new Application();
 		
+		//Set research id of the application
 		application.setResearchID(research.getResearchStudyId());
 		
 		model.addAttribute("application", application);
@@ -105,6 +110,7 @@ public class ResearchController {
 		return "viewResearch.html";
 	}
 	
+	//View details of a research
 	@GetMapping("/viewDetails/{researchid}")
 	public String viewDetails(Model model, @PathVariable int researchid) {
 		
@@ -114,6 +120,7 @@ public class ResearchController {
 		
 	}
 
+	//Search features for users
 	@GetMapping("/searchResearch")
 	public String search(Model model, @RequestParam String search, @RequestParam String criteria) {
 		
