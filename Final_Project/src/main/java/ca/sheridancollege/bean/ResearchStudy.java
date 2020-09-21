@@ -51,7 +51,7 @@ public class ResearchStudy {
 	
 	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST},
 			fetch=FetchType.LAZY) 
-	@JoinTable(name="reachers_study", 
+	@JoinTable(name="researchers_study", 
 	joinColumns = @JoinColumn(name ="researchers_id"), 
 	inverseJoinColumns=@JoinColumn(name="researchStudy_id")
 	)

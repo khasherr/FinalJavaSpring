@@ -29,10 +29,10 @@ public class SecurityController {
 	@GetMapping("/register")
 	public String register(Model model) { 
 		// already made an entity for userAccount
-		// get everrthing from userAccount entity
+		// get everything from userAccount entity
 		UserAccount userAccount = new UserAccount();
 		//add it to the model - we calling it userAccount(in blue) and the object 
-		// we instanted from line 16 userAccount 
+		// we instantiated from line 16 userAccount 
 		model.addAttribute("userAccount", userAccount);
 		return "register";
 		
