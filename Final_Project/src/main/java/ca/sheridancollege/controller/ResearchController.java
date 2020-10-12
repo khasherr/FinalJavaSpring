@@ -1,10 +1,10 @@
 package ca.sheridancollege.controller;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,61 +12,48 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.firebase.cloud.FirestoreClient;
+
 import ca.sheridancollege.bean.Application;
 import ca.sheridancollege.bean.ResearchStudy;
-import ca.sheridancollege.repository.ApplicationRepository;
-import ca.sheridancollege.repository.ResearchStudyRepository;
-import ca.sheridancollege.repository.ResearchersRepository;
+import ca.sheridancollege.util.Functions;
 
 @Controller
 public class ResearchController {
 	
 	//Variables
-	@Autowired
-	private ResearchStudyRepository researchRepository;
 	
-	@Autowired
-	private ResearchersRepository researcherRepository;
-	
-	@Autowired
-	private ApplicationRepository applicationRepository;
+	private Firestore firestore = null;
 	
 	//List researches
 	@GetMapping("/studies")
-	public String listResearch(Model model) {
+	public String listResearch(Model model) throws InterruptedException, ExecutionException {
 		
-		model.addAttribute("researches", researchRepository.findAll());
+		firestore = FirestoreClient.getFirestore();
+
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy").get();
 		
-		model.addAttribute("criterias", getCriterias());
+		model.addAttribute("researches", Functions.getDocuments(snapshot, ResearchStudy.class));
+		
+		model.addAttribute("criterias", Functions.getCriterias());
 		
 		return "viewResearch.html";
 	}
 
-	//Search criterias
-	private ArrayList<String> getCriterias() {
-
-		ArrayList<String> criterias = new ArrayList<>();
-
-		criterias.add("Research Title");
-		criterias.add("Research Area");
-		criterias.add("Research Institution");
-		criterias.add("Research Duration");
-		criterias.add("Researcher");
-		criterias.add("Posted Date");
-		criterias.add("Research Detail");
-		criterias.add("Minimum Number of Participants");
-		criterias.add("Maximum Number of Participants");
-
-		return criterias;
-	}
-	
 	//Apply to a research
 	@GetMapping("/apply/{researchid}")
-	public String apply(Model model, @PathVariable int researchid) {
+	public String apply(Model model, @PathVariable int researchid) throws InterruptedException, ExecutionException {
 		
-		model.addAttribute("research", researchRepository.findById(researchid).get());
+		firestore = FirestoreClient.getFirestore();
 		
-		ResearchStudy research = researchRepository.findById(researchid).get();
+		ResearchStudy research = firestore.collection("researchstudy")
+				.whereEqualTo("researchStudyId", researchid)
+				.get()
+				.get()
+				.getDocuments().get(0).toObject(ResearchStudy.class);
 		
 		Application application = new Application();
 		
@@ -80,93 +67,78 @@ public class ResearchController {
 	}
 	
 	@GetMapping("/saveApplication")
-	public String saveApplication(Model model, @ModelAttribute Application application) {
+	public String saveApplication(Model model, @ModelAttribute Application application) 
+			throws InterruptedException, ExecutionException {
 		
 		//Set applied date
 		SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
-
+		
+		firestore = FirestoreClient.getFirestore();
+		
 		Date date = new Date();
 		
 		application.setAppliedDate(formatter.format(date));
 		
 		//Set state
-		
+
 		application.setState("Not Decided");
 		
-		//Save
-		applicationRepository.save(application);
+		//Set ID
+		int numApplications = Functions.getCollectionCount("application");
 		
-		
-		ResearchStudy research = researchRepository.findById(application.getResearchID()).get();
-		
-		research.getApplications().add(application);
-		
-		researchRepository.save(research);
+		application.setId(Functions.documentID(numApplications + 1, "application"));
 
-		model.addAttribute("researches", researchRepository.findAll());
+		ResearchStudy research = firestore.collection("researchstudy").whereEqualTo("researchStudyId", 
+				application.getResearchID()).get()
+				.get().getDocuments().get(0).toObject(ResearchStudy.class);
+		
+		//Add application to the application collection
+		firestore.collection("application").document(Integer.toString(application.getId())).set(application);
+		
+		firestore.collection("researchstudy").document(Integer.toString(research.getResearchStudyId())).set(research);
+		
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy").get();
+		
+		model.addAttribute("researches", Functions.getDocuments(snapshot, ResearchStudy.class));
 
-		model.addAttribute("criterias", getCriterias());
+		model.addAttribute("criterias", Functions.getCriterias());
 		
 		return "viewResearch.html";
 	}
 	
 	//View details of a research
 	@GetMapping("/viewDetails/{researchid}")
-	public String viewDetails(Model model, @PathVariable int researchid) {
-		
-		model.addAttribute("research", researchRepository.findById(researchid).get());
+	public String viewDetails(Model model, @PathVariable int researchid) 
+			throws InterruptedException, ExecutionException {
+
+		firestore = FirestoreClient.getFirestore();
+
+		ResearchStudy research = firestore.collection("researchstudy")
+				.whereEqualTo("researchStudyId", researchid)
+				.get()
+				.get()
+				.getDocuments().get(0).toObject(ResearchStudy.class);
+
+		model.addAttribute("research", research);
 		
 		return "viewDetails.html";
 		
 	}
 
-	//Search features for users
+	// Search features for users
 	@GetMapping("/searchResearch")
-	public String search(Model model, @RequestParam String search, @RequestParam String criteria) {
-		
-		if(criteria.equals("Research Title")) {
+	public String search(Model model, @RequestParam String search, @RequestParam String criteria) 
+			throws InterruptedException, ExecutionException {
 
-			model.addAttribute("researches", researchRepository.findByResearchTitleContaining(search));
-		} else if(criteria.equals("Research Area")) {
+		firestore = FirestoreClient.getFirestore();
 
-			model.addAttribute("researches", researchRepository.findByResearchAreaContaining(search));
-		}else if(criteria.equals("Research Institution")) {
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy").get();
 
-			model.addAttribute("researches", researchRepository.findByResearchInstitutionContaining(search));
-		}else if(criteria.equals("Research Duration")) {
+		List<Object> researches = Functions.getDocuments(snapshot, ResearchStudy.class);
 
-			model.addAttribute("researches", researchRepository.findByResearchDurationContaining(search));
-		}else if(criteria.equals("Researcher")) {
+		model.addAttribute("researches", Functions.searchResearch(researches, criteria, search));
 
-			model.addAttribute("researches", researchRepository.findByPostedByContaining(search));
-		}else if(criteria.equals("Posted Date")) {
-
-			model.addAttribute("researches", researchRepository.findByPostedDateContaining(search));
-		}else if(criteria.equals("Research Detail")) {
-
-			model.addAttribute("researches", researchRepository.findByResearchDetailContaining(search));
-		}else if(criteria.equals("Minimum Number of Participants")) {
-			try {
-				model.addAttribute("researches", researchRepository
-						.findByNumParticipantsGreaterThanEqual(Integer.parseInt(search)));
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
-		}else {
-			
-			//Maximum number of participants
-
-			try {
-				model.addAttribute("researches", researchRepository
-						.findByNumParticipantsLessThanEqual(Integer.parseInt(search)));
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
-			
-			
-		}
-
-		model.addAttribute("criterias", getCriterias());
+		model.addAttribute("criterias", Functions.getCriterias());
 
 		return "viewResearch.html";
 	}

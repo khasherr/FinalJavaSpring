@@ -1,10 +1,8 @@
 package ca.sheridancollege.bean;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -13,10 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import ca.sheridancollege.bean.Researcher.ResearcherBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -57,10 +55,11 @@ public class ResearchStudy {
 	)
 	private List<Researcher> researchers;
 	
-	
+	/*
 	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST},
             fetch=FetchType.LAZY)
 	private List<Application> applications;
+	*/
 	
 
 }

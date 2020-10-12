@@ -3,6 +3,8 @@ package ca.sheridancollege.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.mail.MessagingException;
 
@@ -15,27 +17,27 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.firebase.cloud.FirestoreClient;
+
 import ca.sheridancollege.bean.Application;
 import ca.sheridancollege.bean.ResearchStudy;
 import ca.sheridancollege.email.EmailServiceImpl;
-import ca.sheridancollege.repository.ApplicationRepository;
-import ca.sheridancollege.repository.ResearchStudyRepository;
+import ca.sheridancollege.util.Functions;
 
 @Controller 
 public class ResearcherController {
 
 	//Variables
-	@Autowired
-	private ResearchStudyRepository researchRepository;
-
-	@Autowired
-	private ApplicationRepository applicationRepository;
 	
 	@Autowired
 	private EmailServiceImpl esi;
 	
 	private int applicationid = 0;
 	private int researchid = 0;
+	private Firestore firestore = null;
 	
 	//Researcher Home
 	@GetMapping("/researchers")
@@ -55,8 +57,11 @@ public class ResearcherController {
 	}
 	
 	@GetMapping("/saveResearch")
-	public String saveResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) {
+	public String saveResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) 
+			throws InterruptedException, ExecutionException {
 		
+		firestore = FirestoreClient.getFirestore();
+				
 		SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
 		
 		Date date = new Date();
@@ -65,7 +70,22 @@ public class ResearcherController {
 		
 		research.setUsername(authentication.getName());
 		
-		researchRepository.save(research);
+		int numResearches = 0;
+		
+		try {
+			numResearches = ca.sheridancollege.util.Functions.getCollectionCount("researchstudy");
+		} catch (Exception e) {
+			System.out.println("The collection \"researchstudy\" does not exist");
+		}
+		
+		research.setResearchStudyId(Functions.documentID(numResearches + 1, "researchstudy"));
+		
+		// Save the new user details as a document
+		try {
+			firestore.collection("researchstudy").document(Long.toString(research.getResearchStudyId())).set(research);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		model.addAttribute("research", new ResearchStudy());
 		
@@ -75,98 +95,53 @@ public class ResearcherController {
 	//Manage registered research
 	//Users can only view researches they registered
 	@GetMapping("/manageResearch")
-	public String manageResearch(Model model, Authentication authentication) {
+	public String manageResearch(Model model, Authentication authentication) throws InterruptedException, ExecutionException {
 		
-		model.addAttribute("researches", researchRepository.findByUsername(authentication.getName()));
+		//Initialize firestore instance
+		firestore = FirestoreClient.getFirestore();
+
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy")
+				.whereEqualTo("username", authentication.getName())
+				.get();
 		
-		model.addAttribute("criterias", getCriterias());
+		model.addAttribute("researches", Functions.getDocuments(snapshot, ResearchStudy.class));
+		
+		model.addAttribute("criterias", Functions.getCriterias());
 		
 		return "manageResearch.html";
-	}
-	
-	//Search criterias
-	private ArrayList<String> getCriterias() {
-
-		ArrayList<String> criterias = new ArrayList<>();
-
-		criterias.add("Research Title");
-		criterias.add("Research Area");
-		criterias.add("Research Institution");
-		criterias.add("Research Duration");
-		criterias.add("Researcher");
-		criterias.add("Posted Date");
-		criterias.add("Research Detail");
-		criterias.add("Minimum Number of Participants");
-		criterias.add("Maximum Number of Participants");
-
-		return criterias;
 	}
 	
 	//Search registered researches
 	@GetMapping("/searchResearchManage")
 	public String searchManage(Model model, @RequestParam String search, @RequestParam String criteria,
-			Authentication authentication) {
+			Authentication authentication) throws InterruptedException, ExecutionException {
 		
-		if(criteria.equals("Research Title")) {
-
-			model.addAttribute("researches", researchRepository.
-					findByResearchTitleContainingAndUsername(search, authentication.getName()));
-		} else if(criteria.equals("Research Area")) {
-
-			model.addAttribute("researches", researchRepository.
-					findByResearchAreaContainingAndUsername(search, authentication.getName()));
-		}else if(criteria.equals("Research Institution")) {
-
-			model.addAttribute("researches", researchRepository.
-					findByResearchInstitutionContainingAndUsername(search, authentication.getName()));
-		}else if(criteria.equals("Research Duration")) {
-
-			model.addAttribute("researches", researchRepository.
-					findByResearchDurationContainingAndUsername(search, authentication.getName()));
-		}else if(criteria.equals("Researcher")) {
-
-			model.addAttribute("researches", researchRepository.
-					findByPostedByContainingAndUsername(search, authentication.getName()));
-		}else if(criteria.equals("Posted Date")) {
-
-			model.addAttribute("researches", researchRepository.
-					findByPostedDateContainingAndUsername(search, authentication.getName()));
-		}else if(criteria.equals("Research Detail")) {
-
-			model.addAttribute("researches", researchRepository.
-					findByResearchDetailContainingAndUsername(search, authentication.getName()));
-			
-		}else if(criteria.equals("Minimum Number of Participants")) {
-			try {
-				model.addAttribute("researches", researchRepository
-						.findByNumParticipantsGreaterThanEqualAndUsername(Integer.parseInt(search), authentication.getName()));
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
-		}else {
-			
-			//Maximum number of participants
-
-			try {
-				model.addAttribute("researches", researchRepository
-						.findByNumParticipantsLessThanEqualAndUsername(Integer.parseInt(search), authentication.getName()));
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
-			
-			
-		}
-
-		model.addAttribute("criterias", getCriterias());
+		firestore = FirestoreClient.getFirestore();
+		
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy")
+				.whereEqualTo("username", authentication.getName())
+				.get();
+		
+		List<Object> researches = Functions.getDocuments(snapshot, ResearchStudy.class);
+		
+		model.addAttribute("researches", Functions.searchResearch(researches, criteria, search));
+		
+		model.addAttribute("criterias", Functions.getCriterias());
 		
 		return "manageResearch.html";
 	}
 	
 	//Edit research
 	@GetMapping("/editResearch/{researchid}")
-	public String editResearch(Model model, @PathVariable int researchid) {
+	public String editResearch(Model model, @PathVariable int researchid) throws InterruptedException, ExecutionException {
 		
-		ResearchStudy research = researchRepository.findById(researchid).get();
+		firestore = FirestoreClient.getFirestore();
+		
+		ResearchStudy research = firestore.collection("researchstudy")
+				.whereEqualTo("researchStudyId", researchid)
+				.get()
+				.get()
+				.getDocuments().get(0).toObject(ResearchStudy.class);
 
 		model.addAttribute("research", research);
 		
@@ -176,56 +151,85 @@ public class ResearcherController {
 	
 	//Delete research
 	@GetMapping("/deleteResearch/{researchid}")
-	public String deleteResearch(Model model, @PathVariable int researchid, Authentication authentication) {
+	public String deleteResearch(Model model, @PathVariable int researchid, Authentication authentication) 
+			throws InterruptedException, ExecutionException {
 
-		ResearchStudy research = researchRepository.findById(researchid).get();
+		firestore = FirestoreClient.getFirestore();
 		
-		//Send cancellation mails to all applicants
-		
-		for (Application application : research.getApplications()) {
+		ResearchStudy research = firestore.collection("researchstudy")
+				.whereEqualTo("researchStudyId", researchid).get()
+				.get()
+				.getDocuments().get(0).toObject(ResearchStudy.class);
+
+		// Retrieve the applications
+		List<Application> applications = new ArrayList<Application>();
+
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("application")
+				.whereEqualTo("researchID", research.getResearchStudyId())
+				.whereEqualTo("state", "Not Decided")
+				.get();
+
+		for (Object object : Functions.getDocuments(snapshot, Application.class)) {
+
+			// All objects in the array are Application class objects
+			Application application = (Application) object;
+
+			applications.add(application);
+		}
+
+		// Send cancelation emails to the applicants
+		for (Application application : applications) {
 			String msg = "Research Canceled\n" + "\nResearch Title: " + research.getResearchTitle()
 					+ "\nApplicant name: " + application.getName() + "\nAppication Title: " + application.getTitle();
 			try {
-				esi.sendMailWithInline(application.getEmail(), research.getResearchTitle() + " has been canceled", 
+				esi.sendMailWithInline(application.getEmail(), research.getResearchTitle() + " has been canceled",
 						"Researva", msg, "Team Guacamole");
 			} catch (MessagingException e) {
 				System.out.println(e);
 			}
-			
-			applicationRepository.delete(application);
+
+			firestore.collection("application").document(Integer.toString(application.getId())).delete();
 		}
 		
+		firestore.collection("researchstudy").document(Integer.toString(researchid)).delete();
 		
-		researchRepository.delete(research);
-
-		model.addAttribute("researches", researchRepository.findByUsername(authentication.getName()));
-
-		model.addAttribute("criterias", getCriterias());
-		
-		return "manageResearch.html";
+		return "redirect:/manageResearch";
 		
 	}
 	
 	//Update research
 	@GetMapping("/updateResearch")
-	public String updateResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) {
+	public String updateResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) 
+			throws InterruptedException, ExecutionException {
 		
-		researchRepository.save(research);
-
-		model.addAttribute("researches", researchRepository.findByUsername(authentication.getName()));
-
-		model.addAttribute("criterias", getCriterias());
+		firestore = FirestoreClient.getFirestore();
 		
-		return "manageResearch.html";
+		research.setUsername(authentication.getName());
+		
+		firestore.collection("researchstudy").document(research.getResearchStudyId().toString()).set(research);
+		
+		return "redirect:/manageResearch";
 	}
 	
 	//View applications of a selected research
 	@GetMapping("/viewApplications/{researchid}")
-	public String viewApplications(Model model, @PathVariable int researchid) {
+	public String viewApplications(Model model, @PathVariable int researchid) 
+			throws InterruptedException, ExecutionException {
 		
-		ResearchStudy research = researchRepository.findById(researchid).get();
+		firestore = FirestoreClient.getFirestore();
 		
-		model.addAttribute("applications", applicationRepository.findByResearchIDAndState(researchid, "Not Decided"));
+		ResearchStudy research = firestore.collection("researchstudy")
+				.whereEqualTo("researchStudyId", researchid)
+				.get()
+				.get()
+				.getDocuments().get(0).toObject(ResearchStudy.class);
+		
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("application")
+				.whereEqualTo("researchID", researchid)
+				.whereEqualTo("state", "Not Decided")
+				.get();
+		
+		model.addAttribute("applications", Functions.getDocuments(snapshot, Application.class));
 		
 		model.addAttribute("research", research);
 		
@@ -236,11 +240,17 @@ public class ResearcherController {
 	
 	//View selected application
 	@GetMapping("/viewApplication/{id}")
-	public String viewApplication(Model model, @PathVariable int id) {
+	public String viewApplication(Model model, @PathVariable int id) 
+			throws InterruptedException, ExecutionException {
+		
+		firestore = FirestoreClient.getFirestore();
 		
 		applicationid = id;
 		
-		model.addAttribute("app", applicationRepository.findById(id));
+		Application application = firestore.collection("application").document(Integer.toString(id)).get()
+				.get().toObject(Application.class);
+		
+		model.addAttribute("app", application);
 		
 		model.addAttribute("researchid", researchid);
 		
@@ -251,15 +261,22 @@ public class ResearcherController {
 	
 	//Reject application
 	@GetMapping("/rejectApplication")
-	public String rejectApplication(Model model) {
+	public String rejectApplication(Model model) throws InterruptedException, ExecutionException {
 
-		Application application = applicationRepository.findById(applicationid);
+		firestore = FirestoreClient.getFirestore();
+		
+		Application application = firestore.collection("application").document(Integer.toString(applicationid)).get()
+				.get().toObject(Application.class);
 
 		String email = application.getEmail();
 
 		int researchid = application.getResearchID();
 
-		ResearchStudy research = researchRepository.findById(researchid).get();
+		ResearchStudy research = firestore.collection("researchstudy")
+				.whereEqualTo("researchStudyId", researchid)
+				.get()
+				.get()
+				.getDocuments().get(0).toObject(ResearchStudy.class);
 		
 		//Send reject email
 		String msg = "Your application has been rejected.\n"
@@ -274,10 +291,14 @@ public class ResearcherController {
 		
 		application.setState("Rejected");
 		
-		applicationRepository.save(application);
+		firestore.collection("application").document(Integer.toString(application.getId())).set(application);
 		
-
-		model.addAttribute("applications", applicationRepository.findByResearchIDAndState(researchid, "Not Decided"));
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("application")
+				.whereEqualTo("researchID", researchid)
+				.whereEqualTo("state", "Not Decided")
+				.get();
+		
+		model.addAttribute("applications",  Functions.getDocuments(snapshot, Application.class));
 		
 		model.addAttribute("research", research);
 		
@@ -286,15 +307,20 @@ public class ResearcherController {
 	
 	//Accept application
 	@GetMapping("/acceptApplication")
-	public String acceptApplication(Model model) {
+	public String acceptApplication(Model model) throws InterruptedException, ExecutionException {
 
-		Application application = applicationRepository.findById(applicationid);
+		Application application = firestore.collection("application").document(Integer.toString(applicationid)).get()
+				.get().toObject(Application.class);
 		
 		String email = application.getEmail();
 
 		int researchid = application.getResearchID();
 		
-		ResearchStudy research = researchRepository.findById(researchid).get();
+		ResearchStudy research = firestore.collection("researchstudy")
+				.whereEqualTo("researchStudyId", researchid)
+				.get()
+				.get()
+				.getDocuments().get(0).toObject(ResearchStudy.class);
 		
 		// Send Acceptance email
 		String msg = "Your application has been accepted!\n" + 
@@ -314,9 +340,14 @@ public class ResearcherController {
 
 		application.setState("Accepted");
 		
-		applicationRepository.save(application);
+		firestore.collection("application").document(Integer.toString(application.getId())).set(application);
+		
+		ApiFuture<QuerySnapshot> snapshot = firestore.collection("application")
+				.whereEqualTo("researchID", researchid)
+				.whereEqualTo("state", "Not Decided")
+				.get();
 
-		model.addAttribute("applications", applicationRepository.findByResearchIDAndState(researchid, "Not Decided"));
+		model.addAttribute("applications", Functions.getDocuments(snapshot, Application.class));
 		
 		model.addAttribute("research", research);
 		

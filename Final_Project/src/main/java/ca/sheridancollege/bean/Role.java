@@ -23,8 +23,9 @@ public class Role {
 	
 	private String rolename;
 	
-	public Role(String rolename) {
+	public Role(String rolename, Long id) {
 		this.rolename = rolename;
+		this.id = id;
 	}
 	
 	@ManyToMany(cascade=CascadeType.ALL, mappedBy="roles")
