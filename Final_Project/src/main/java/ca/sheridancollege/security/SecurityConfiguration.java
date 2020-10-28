@@ -5,13 +5,11 @@ package ca.sheridancollege.security;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -57,6 +55,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/registerResearch").hasRole("USER")
 		.antMatchers("/manageResearch").hasRole("USER")
 		.antMatchers("/apply/**").hasRole("USER")
+		.antMatchers("/researchers/**").hasRole("USER")
+		.antMatchers("/studies/**").hasRole("ADMINISTRATOR")
 		//permit h2 console only if we are using h2-console
 		.antMatchers("/h2-console/**").permitAll()
 		.antMatchers("/").permitAll()
@@ -73,8 +73,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.exceptionHandling()
 			.accessDeniedHandler(accessDeniedHandler);
 
-	http.csrf().disable();
-	http.headers().frameOptions().disable();
 	http.csrf().disable();
 	http.headers().frameOptions().disable();
 	

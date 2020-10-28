@@ -42,7 +42,7 @@ public class EmailServiceImpl {
 
         message.setTo(to);
         message.setSubject(subject);
-        message.setFrom("researvaTest34049@gmail.com");
+        message.setFrom("researvatest2@gmail.com");
 
         final String htmlContent = this.templateEngine.process("emailTemplate.html", ctx);
 

@@ -17,7 +17,7 @@ public class SpringMailConfig {
         mailSender.setPort(587);
 
         //This is my Capstone test account
-        mailSender.setUsername("researvaTest34049@gmail.com");
+        mailSender.setUsername("researvatest2@gmail.com");
         mailSender.setPassword("Researva34049");
 
         Properties props = mailSender.getJavaMailProperties();

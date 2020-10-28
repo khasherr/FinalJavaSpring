@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.springframework.security.core.Authentication;
+
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
@@ -148,5 +150,28 @@ public class Functions {
 		} while(exists);
 		
 		return id;
+	}
+	
+	public static String getUserType(Authentication auth) {
+		
+		if(auth.isAuthenticated()) {
+			//If the user is logged in
+			if(isAdministrator(auth)) {
+				return "ADMINISTRATOR";
+			} else {
+				return "USER";
+			}
+			
+		} else {
+			//If the user is not logged in
+			return "USER";
+		}
+	}
+	
+	private static boolean isAdministrator(Authentication auth) {
+		
+		//Reference: https://stackoverflow.com/questions/10092882/how-can-i-get-the-current-user-roles-from-spring-security-3-1
+		return auth.getAuthorities().stream()
+				.anyMatch(role -> role.getAuthority().equals("ROLE_ADMINISTRATOR"));
 	}
 }

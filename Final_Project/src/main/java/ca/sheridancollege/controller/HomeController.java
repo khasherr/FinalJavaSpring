@@ -1,38 +1,71 @@
 package ca.sheridancollege.controller;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
 	
+	Authentication auth = null;
 	
 	//Home
 	@GetMapping("/")
-	public String displayHome( ) { 
+	public String displayHome(Model model) {
+		
+		auth = SecurityContextHolder.getContext().getAuthentication();
+		
+		model = add(model, auth, "home");
+		
 		return "home.html";
 	}
 	
 	//Learn More page
-	@GetMapping("/learnMore")
-	public String learnMore() {
+	@GetMapping("/about-us")
+	public String aboutUs(Model model) {
 		
-		return "learnMore.html";
-	}
-	
-	//Get Involved page
-	@GetMapping("/get-involved")
-	public String getInvolved() {
+		model = add(model, auth, "");
 		
-		return "learnMore.html";
+		return "aboutUs.html";
 	}
 	
 	//Access denied page
 	@GetMapping("/access-denied")
-	public String goaccessdenied() {
+	public String goaccessdenied(Model model) {
+		
+		model = add(model, auth, "");
 		
 		return "access-denied.html";
 		
 	}
-
+	
+	private static Model add(Model model, Authentication auth, String home) {
+		
+		if(auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
+			//If the user is logged in
+			if(home.equals("home")) {
+				model.addAttribute("status", "logged in");
+			}
+			
+			if(ca.sheridancollege.util.Functions.getUserType(auth).equals("ADMINISTRATOR")) {
+				model.addAttribute("role", "ADMINISTRATOR");
+			} else {
+				model.addAttribute("role", "USER");
+			}
+			
+		} else {
+			if(home.equals("home")) {
+			//If the user is not logged in
+				model.addAttribute("status", "logged out");
+			}
+			
+			model.addAttribute("role", "USER");
+		}
+		
+		
+		return model;
+	}
 }
