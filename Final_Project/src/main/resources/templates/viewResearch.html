@@ -7,8 +7,7 @@
 
 	<div class="jumbotron">
 		<h1 class="display-4">Research List</h1>
-		<p class="lead">Search Research and Apply as a Research
-			Participant!</p>
+		<p class="lead">Manage Research Studies</p>
 		<hr class="my-4">
 	</div>
 	<br>
@@ -50,8 +49,8 @@
 				</td>
 				<td>
 					<form action="#"
-						th:action="@{/apply/{researchid}(researchid=${r.researchStudyId})}">
-						<button type="submit" class="btn btn-primary">Apply</button>
+						th:action="@{/deleteResearch/{researchid}(researchid=${r.researchStudyId})}">
+						<button type="submit" class="btn btn-primary">Delete</button>
 					</form>
 				</td>
 			</tr>

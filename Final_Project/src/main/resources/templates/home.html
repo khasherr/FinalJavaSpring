@@ -1,42 +1,47 @@
 <head th:replace="layout :: head"></head>
 <body>
 
-<!--I made a layout file that has navbar and we used th:replace to import that file into there navbar = th:fragment
+	<!--I made a layout file that has navbar and we used th:replace to import that file into there navbar = th:fragment
 it is a nav thats why we used <nav if it was div we would <div -->
-<nav th:replace="layout :: navbar"></nav>
+	<nav th:replace="layout :: navbar"></nav>
 
-<br> <br> 
+	<br>
+	<br>
 
 
 
 
-<div class="jumbotron">
-  <h1 class="display-4">Welcome </h1>
-  <p class="lead">Working passionately to understand and resolve healthcare needs of people in Canada.</p>
-		<div th:if="${status} == 'logged out'">
-			<hr class="my-4">
-			<p class="lead">Already have an account?</p>
-			<a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
-			<hr class="my-4">
-			<p class="lead">If you don't have an account, sign up!</p>
-			<a class="btn btn-primary btn-lg" href="/register" role="button">Register</a>
-		</div>
-		<div th:if="${status} == 'logged in'">
-			<div th:if="${role} == 'USER'">
+	<div class="jumbotron" style="display: inline; text-align: center;">
+			<h1 class="display-4">Welcome</h1>
+			<p class="lead">Working passionately to understand and resolve
+				healthcare needs of people in Canada.</p>
+			<div th:if="${status} == 'logged out'">
 				<hr class="my-4">
-		    	<p class="lead">Click the "Researchers" tab. You can start with registering research! </p>
-  				<a class="btn btn-primary btn-lg" href="/researchers" role="button">Register Research</a>
-			</div>
-			<div th:if="${role} == 'ADMINISTRATOR'">
+				<p class="lead">Already have an account?</p>
+				<a class="btn btn-primary btn-lg" href="/login" role="button">Login</a>
 				<hr class="my-4">
-				<p class="lead">Click the "Manage Studies" tab. You can search and manage any research 
-				researchers have posted! </p>
-  				<a class="btn btn-primary btn-lg" href="/studies" role="button">Manage Studies</a>
+				<p class="lead">If you don't have an account, sign up!</p>
+				<a class="btn btn-primary btn-lg" href="/registerOptions" role="button">Register</a>
 			</div>
-			<hr class="my-4">
-			<a class="btn btn-primary btn-lg" href="/logout" role="button">Logout</a>
-		</div>
-</div>
+			<div th:if="${status} == 'logged in'">
+				<div th:if="${role} == 'USER'">
+					<hr class="my-4">
+					<p class="lead">Click the "Researchers" tab. You can start with
+						registering research!</p>
+					<a class="btn btn-primary btn-lg" href="/researchers" role="button">Register
+						Research</a>
+				</div>
+				<div th:if="${role} == 'ADMINISTRATOR'">
+					<hr class="my-4">
+					<p class="lead">Click the "Manage Studies" tab. You can search
+						and manage any research researchers have posted!</p>
+					<a class="btn btn-primary btn-lg" href="/studies" role="button">Manage
+						Studies</a>
+				</div>
+				<hr class="my-4">
+				<a class="btn btn-primary btn-lg" href="/logout" role="button">Logout</a>
+			</div>
+	</div>
 
 
 </body>

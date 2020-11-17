@@ -13,6 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 //import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import ca.sheridancollege.bean.Role;
 import lombok.AllArgsConstructor;
@@ -47,10 +51,17 @@ public class UserAccount {
 	// underscors in postgres table properties but in postgres there aren't any underscore
 	// so here I am associating the property username == in postgres with userName
 	// Code for PostgreSQL
-	//@Column (name="username")
-	//private String userName;
+	
+	@NotNull(message="Please type the User Name")
+	@NotEmpty(message="Please type the User Name")
+	@Pattern(regexp="^[a-zA-Z0-9]*$", message="Must contain alphanumeric characters only")
 	private String username;
+	@NotNull(message="Please type the Email")
+	@NotEmpty(message="Please type the Email")
+	@Email(message = "Email is not valid. The email should be in a proper email format.")
 	private String email;
+	@NotNull(message="Please type the Password")
+	@NotEmpty(message="Please type the Password")
 	private String password;
 	private boolean enabled = true;
 	

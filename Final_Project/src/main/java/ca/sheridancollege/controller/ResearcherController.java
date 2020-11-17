@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.MessagingException;
 
@@ -80,6 +81,8 @@ public class ResearcherController {
 		
 		research.setResearchStudyId(Functions.documentID(numResearches + 1, "researchstudy"));
 		
+		research.setApplyCount(0);
+		
 		// Save the new user details as a document
 		try {
 			firestore.collection("researchstudy").document(Long.toString(research.getResearchStudyId())).set(research);
@@ -149,7 +152,7 @@ public class ResearcherController {
 		
 	}
 	
-	//Delete research
+	//Delete research - researcher
 	@GetMapping("/deleteResearch/{researchid}")
 	public String deleteResearch(Model model, @PathVariable int researchid, Authentication authentication) 
 			throws InterruptedException, ExecutionException {
@@ -193,8 +196,15 @@ public class ResearcherController {
 		
 		firestore.collection("researchstudy").document(Integer.toString(researchid)).delete();
 		
-		return "redirect:/manageResearch";
+		//Sleep for 1 second
+		//Wait for the update
+		TimeUnit.MILLISECONDS.sleep(1000);
 		
+		if(ca.sheridancollege.util.Functions.getUserType(authentication).equals("ADMINISTRATOR")) {
+			return "redirect:/studies";
+		} else {
+			return "redirect:/manageResearch";
+		}
 	}
 	
 	//Update research

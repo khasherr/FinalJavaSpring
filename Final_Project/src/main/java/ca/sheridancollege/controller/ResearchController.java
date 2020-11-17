@@ -1,10 +1,15 @@
 package ca.sheridancollege.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.mail.MessagingException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +24,16 @@ import com.google.firebase.cloud.FirestoreClient;
 
 import ca.sheridancollege.bean.Application;
 import ca.sheridancollege.bean.ResearchStudy;
+import ca.sheridancollege.email.EmailServiceImpl;
 import ca.sheridancollege.util.Functions;
 
 @Controller
 public class ResearchController {
 	
 	//Variables
+
+	@Autowired
+	private EmailServiceImpl esi;
 	
 	private Firestore firestore = null;
 	
@@ -125,7 +134,7 @@ public class ResearchController {
 		
 	}
 
-	// Search features for users
+	// Search features for Administrators
 	@GetMapping("/searchResearch")
 	public String search(Model model, @RequestParam String search, @RequestParam String criteria) 
 			throws InterruptedException, ExecutionException {
