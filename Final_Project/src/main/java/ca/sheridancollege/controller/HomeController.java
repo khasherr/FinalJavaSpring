@@ -42,6 +42,11 @@ public class HomeController {
 		
 	}
 	
+	@GetMapping("/error")
+	public String handleError(Model model) {
+		return "error.html";
+	}
+	
 	private static Model add(Model model, Authentication auth, String home) {
 		
 		if(auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {

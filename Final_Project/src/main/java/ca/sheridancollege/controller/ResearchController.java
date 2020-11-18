@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
 
@@ -52,6 +53,7 @@ public class ResearchController {
 		return "viewResearch.html";
 	}
 
+	/*
 	//Apply to a research
 	@GetMapping("/apply/{researchid}")
 	public String apply(Model model, @PathVariable int researchid) throws InterruptedException, ExecutionException {
@@ -115,6 +117,8 @@ public class ResearchController {
 		return "viewResearch.html";
 	}
 	
+	*/
+	
 	//View details of a research
 	@GetMapping("/viewDetails/{researchid}")
 	public String viewDetails(Model model, @PathVariable int researchid) 
@@ -136,11 +140,48 @@ public class ResearchController {
 
 	// Search features for Administrators
 	@GetMapping("/searchResearch")
-	public String search(Model model, @RequestParam String search, @RequestParam String criteria) 
+	public String search(Model model, @RequestParam String search, @RequestParam String criteria)
 			throws InterruptedException, ExecutionException {
 
 		firestore = FirestoreClient.getFirestore();
-
+		
+		boolean errorFound = false;
+		ArrayList<String> errors = new ArrayList<String>();
+		
+		if (criteria.equals("Researcher")) {
+			
+			errorFound = !Pattern.compile("^[a-zA-Z0-9,;\\-. ]*$").matcher(search).matches();
+			errors.add("Alphanumeric characters, \",\", ; , and the whitespace are allowed");
+			
+		} else if (criteria.equals("Minimum Number of Participants") 
+				|| criteria.equals("Maximum Number of Participants")) {
+			try {
+				int validation = Integer.parseInt(search);
+				
+				if (validation < 1) {
+					errors.add("The minimum number of participants is 1.");
+				}
+				errorFound = true;
+			} catch (Exception e) {
+				errorFound = true;
+				errors.add("Please type a number");
+			}
+		}
+		
+		if(errorFound) {
+			
+			ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy").get();
+			
+			model.addAttribute("researches", Functions.getDocuments(snapshot, ResearchStudy.class));
+			
+			model.addAttribute("criterias", Functions.getCriterias());
+			
+			model.addAttribute("errors", errors);
+			
+			return "viewResearch.html";
+		}
+		
+		
 		ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy").get();
 
 		List<Object> researches = Functions.getDocuments(snapshot, ResearchStudy.class);

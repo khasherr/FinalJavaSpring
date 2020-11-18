@@ -14,35 +14,42 @@
   <form action="#" th:action="@{/saveResearch}" th:object="${research}">
 	<div class="form-group">
 		<label>Research Title</label><br>
+		<div th:each="e:${errorTitle}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="text" th:field="*{researchTitle}" size="50">
 	</div>
 	<div class="form-group">
 		<label>Research Area</label><br>
+		<div th:each="e:${errorArea}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="text" th:field="*{researchArea}" size="50">
 	</div>
 	<div class="form-group">
 		<label>Research Institution</label><br>
+		<div th:each="e:${errorInstitution}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="text" th:field="*{researchInstitution}" aria-describedby="institutionHelp" size="50">
 		<small id="institutionHelp" class="form-text text-muted">Write the name of the research institution
 		 your research belongs to!</small>
 	</div>
 	<div class="form-group">
 		<label>Research Duration</label><br>
+		<div th:each="e:${errorDuration}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="text" th:field="*{researchDuration}" aria-describedby="durationHelp" size="50">
 		<small id="durationHelp" class="form-text text-muted">Feel free to write in any Date format!</small>
 	</div>
 	<div class="form-group">
 		<label>Researcher Name</label><br>
+		<div th:each="e:${errorName}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="text" th:field="*{postedBy}" aria-describedby="authorHelp" size="50">
 		<small id="authorHelp" class="form-text text-muted">The name of a researcher who is posting this research!</small>
 	</div>
 	<div class="form-group">
 		<label>Research Details</label><br>
+		<div th:each="e:${errorDetails}" th:text="${e}" id="errors" style="color: red;"></div>
 		<textarea th:field="*{researchDetail}" aria-describedby="detailHelp" cols="50"></textarea>
 		<small id="detailHelp" class="form-text text-muted">Details of the research</small>
 	</div>
 	<div class="form-group">
 		<label>Number of Research participants planned</label><br>
+		<div th:each="e:${errorNumParticipants}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="number" th:field="*{numParticipants}" size="50">
 	</div>
 	<br>

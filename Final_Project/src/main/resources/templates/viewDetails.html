@@ -11,6 +11,8 @@
 		<h1 class="display-4" th:text="${research.researchTitle}"></h1>
 		<p class="lead"
 			th:text="'Posted by ' + ${research.postedBy} + ', ' + ${research.postedDate}"></p>
+		<p class="lead"
+			th:text="'Number of Applications received : ' + ${research.applyCount}"></p>
 		<hr class="my-4">
 		<table class="table">
 			<tbody>
@@ -36,6 +38,7 @@
 				</tr>
 			</tbody>
 		</table>
+		<!--
 		<br>
 		<blockquote class="blockquote">
 			<p class="mb-0">List of Researchers</p>
@@ -48,6 +51,7 @@
 				</tr>
 			</tbody>
 		</table>
+		 -->
 
 		<br>
 

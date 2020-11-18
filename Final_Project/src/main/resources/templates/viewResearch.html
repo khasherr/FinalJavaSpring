@@ -22,6 +22,7 @@
 		&nbsp;
   		<a class="btn btn-primary" href="/studies" role="button">Clear Search Results</a>
 	</form>
+	<div th:each="e:${errors}" th:text="${e}" id="errors" style="color: red; margin-left: 20px;"></div>
 	<br>
 	<table class="table">
 		<thead>

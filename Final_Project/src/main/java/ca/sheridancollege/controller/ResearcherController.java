@@ -4,10 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import javax.mail.MessagingException;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -52,14 +57,78 @@ public class ResearcherController {
 	public String registerResearch(Model model) {
 		
 		model.addAttribute("research", new ResearchStudy());
+		model.addAttribute("error", false);
 		
 		
 		return "registerResearch.html";
 	}
 	
+	private ArrayList<ArrayList<String>> researchValidation(Set<ConstraintViolation<ResearchStudy>> validationErrors){
+		List<String> errorTitle = new ArrayList<String>();
+		List<String> errorArea = new ArrayList<String>();
+		List<String> errorInstitution = new ArrayList<String>();
+		List<String> errorDuration = new ArrayList<String>();
+		List<String> errorName = new ArrayList<String>();
+		List<String> errorDetails = new ArrayList<String>();
+		List<String> errorNumParticipants = new ArrayList<String>();
+		
+		for (ConstraintViolation<ResearchStudy> e : validationErrors) {
+			if(e.getPropertyPath().toString().equals("researchTitle")) {
+				errorTitle.add(e.getMessage());
+			} else if(e.getPropertyPath().toString().equals("researchArea")) {
+				errorArea.add(e.getMessage());
+			} else if(e.getPropertyPath().toString().equals("researchInstitution")) {
+				errorInstitution.add(e.getMessage());
+			} else if(e.getPropertyPath().toString().equals("researchDuration")) {
+				errorDuration.add(e.getMessage());
+			} else if(e.getPropertyPath().toString().equals("postedBy")) {
+				errorName.add(e.getMessage());
+			} else if(e.getPropertyPath().toString().equals("researchDetail")) {
+				errorDetails.add(e.getMessage());
+			} else {
+				errorNumParticipants.add(e.getMessage());
+			}
+		}
+		
+		ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
+		
+		data.add((ArrayList<String>) errorTitle);
+		data.add((ArrayList<String>) errorArea);
+		data.add((ArrayList<String>) errorInstitution);
+		data.add((ArrayList<String>) errorDuration);
+		data.add((ArrayList<String>) errorName);
+		data.add((ArrayList<String>) errorDetails);
+		data.add((ArrayList<String>) errorNumParticipants);
+		
+		return data;
+	}
+	
 	@GetMapping("/saveResearch")
 	public String saveResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) 
 			throws InterruptedException, ExecutionException {
+		
+		//Validation
+		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+		Set<ConstraintViolation<ResearchStudy>> validationErrors = validator.validate(research);
+
+		if (!validationErrors.isEmpty()) {
+			
+			ArrayList<ArrayList<String>> errors = researchValidation(validationErrors);
+			
+			model.addAttribute("errorTitle", errors.get(0));
+			model.addAttribute("errorArea", errors.get(1));
+			model.addAttribute("errorInstitution", errors.get(2));
+			model.addAttribute("errorDuration", errors.get(3));
+			model.addAttribute("errorName", errors.get(4));
+			model.addAttribute("errorDetails", errors.get(5));
+			model.addAttribute("errorNumParticipants", errors.get(6));
+
+			model.addAttribute("research", research);
+			model.addAttribute("error", true);
+
+			return "registerResearch.html";
+		}
+		
 		
 		firestore = FirestoreClient.getFirestore();
 				
@@ -91,6 +160,7 @@ public class ResearcherController {
 		}
 		
 		model.addAttribute("research", new ResearchStudy());
+		model.addAttribute("error", false);
 		
 		return "registerResearch.html";
 	}
@@ -121,15 +191,47 @@ public class ResearcherController {
 		
 		firestore = FirestoreClient.getFirestore();
 		
+		boolean errorFound = false;
+		ArrayList<String> errors = new ArrayList<String>();
+		
+		if (criteria.equals("Researcher")) {
+			
+			errorFound = !Pattern.compile("^[a-zA-Z0-9,;\\-. ]*$").matcher(search).matches();
+			errors.add("Alphanumeric characters, \",\", ; , and the whitespace are allowed");
+			
+		} else if (criteria.equals("Minimum Number of Participants") 
+				|| criteria.equals("Maximum Number of Participants")) {
+			try {
+				int validation = Integer.parseInt(search);
+				
+				if (validation < 1) {
+					errors.add("The minimum number of participants is 1.");
+					errorFound = true;
+				}
+			} catch (Exception e) {
+				errorFound = true;
+				errors.add("Please type a number");
+			}
+		}
+		
 		ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy")
 				.whereEqualTo("username", authentication.getName())
 				.get();
 		
 		List<Object> researches = Functions.getDocuments(snapshot, ResearchStudy.class);
 		
-		model.addAttribute("researches", Functions.searchResearch(researches, criteria, search));
-		
 		model.addAttribute("criterias", Functions.getCriterias());
+		
+		if (errorFound) {
+
+			model.addAttribute("researches", researches);
+
+			model.addAttribute("errors", errors);
+
+			return "manageResearch.html";
+		}
+		
+		model.addAttribute("researches", Functions.searchResearch(researches, criteria, search));
 		
 		return "manageResearch.html";
 	}
@@ -211,6 +313,28 @@ public class ResearcherController {
 	@GetMapping("/updateResearch")
 	public String updateResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) 
 			throws InterruptedException, ExecutionException {
+
+		// Validation
+		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+		Set<ConstraintViolation<ResearchStudy>> validationErrors = validator.validate(research);
+
+		if (!validationErrors.isEmpty()) {
+
+			ArrayList<ArrayList<String>> errors = researchValidation(validationErrors);
+
+			model.addAttribute("errorTitle", errors.get(0));
+			model.addAttribute("errorArea", errors.get(1));
+			model.addAttribute("errorInstitution", errors.get(2));
+			model.addAttribute("errorDuration", errors.get(3));
+			model.addAttribute("errorName", errors.get(4));
+			model.addAttribute("errorDetails", errors.get(5));
+			model.addAttribute("errorNumParticipants", errors.get(6));
+
+			model.addAttribute("research", research);
+			model.addAttribute("error", true);
+
+			return "editResearch.html";
+		}
 		
 		firestore = FirestoreClient.getFirestore();
 		
