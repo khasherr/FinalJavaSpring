@@ -23,6 +23,11 @@ public class HomeController {
 		return "home.html";
 	}
 	
+	@GetMapping("/login")
+	public String login() {
+		return "login.html";
+	}
+	
 	//Learn More page
 	@GetMapping("/about-us")
 	public String aboutUs(Model model) {
@@ -47,7 +52,7 @@ public class HomeController {
 		return "error.html";
 	}
 	
-	private static Model add(Model model, Authentication auth, String home) {
+	protected static Model add(Model model, Authentication auth, String home) {
 		
 		if(auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
 			//If the user is logged in
@@ -67,7 +72,7 @@ public class HomeController {
 				model.addAttribute("status", "logged out");
 			}
 			
-			model.addAttribute("role", "USER");
+			model.addAttribute("role", "NONE");
 		}
 		
 		

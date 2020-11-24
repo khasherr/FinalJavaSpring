@@ -54,6 +54,12 @@
 		<div th:each="e:${errorNumParticipants}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="number" th:field="*{numParticipants}" size="50">
 	</div>
+	<div class="form-group">
+		<label>Video URL</label><br>
+		<input type="text" th:field="*{videoURL}" aria-describedby="URLHelp" size="50">
+		<small id="URLHelp" class="form-text text-muted">Do you have a YouTube video for the research? 
+		Add the link here!</small>
+	</div>
 	<br>
 	<button type="submit" class="btn btn-primary">Edit</button>
 </form>
@@ -63,7 +69,7 @@
 		<form action="#" th:action="@{/manageResearch}">
 			<input type="submit" value="Back" class="btn btn-primary">
 		</form>
-	</div>
+</div>
 
 
 

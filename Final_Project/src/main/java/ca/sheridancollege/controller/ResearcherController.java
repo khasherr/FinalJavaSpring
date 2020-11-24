@@ -64,6 +64,8 @@ public class ResearcherController {
 	}
 	
 	private ArrayList<ArrayList<String>> researchValidation(Set<ConstraintViolation<ResearchStudy>> validationErrors){
+		
+		//Validation String lists
 		List<String> errorTitle = new ArrayList<String>();
 		List<String> errorArea = new ArrayList<String>();
 		List<String> errorInstitution = new ArrayList<String>();
@@ -72,6 +74,7 @@ public class ResearcherController {
 		List<String> errorDetails = new ArrayList<String>();
 		List<String> errorNumParticipants = new ArrayList<String>();
 		
+		//Add the error messages
 		for (ConstraintViolation<ResearchStudy> e : validationErrors) {
 			if(e.getPropertyPath().toString().equals("researchTitle")) {
 				errorTitle.add(e.getMessage());
@@ -92,6 +95,7 @@ public class ResearcherController {
 		
 		ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
 		
+		//Add them in another arraylist
 		data.add((ArrayList<String>) errorTitle);
 		data.add((ArrayList<String>) errorArea);
 		data.add((ArrayList<String>) errorInstitution);
@@ -103,6 +107,7 @@ public class ResearcherController {
 		return data;
 	}
 	
+	//Save Researches
 	@GetMapping("/saveResearch")
 	public String saveResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) 
 			throws InterruptedException, ExecutionException {
@@ -157,10 +162,16 @@ public class ResearcherController {
 			firestore.collection("researchstudy").document(Long.toString(research.getResearchStudyId())).set(research);
 		} catch (Exception e) {
 			e.printStackTrace();
+			
 		}
+		
+		//Add a message
+		List<String> messages = new ArrayList<String>();
+		messages.add("Your Research has been successfully added!");
 		
 		model.addAttribute("research", new ResearchStudy());
 		model.addAttribute("error", false);
+		model.addAttribute("messages", messages);
 		
 		return "registerResearch.html";
 	}

@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 //import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -51,15 +52,18 @@ public class UserAccount {
 	// underscors in postgres table properties but in postgres there aren't any underscore
 	// so here I am associating the property username == in postgres with userName
 	// Code for PostgreSQL
-	
+
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type the User Name")
 	@NotEmpty(message="Please type the User Name")
 	@Pattern(regexp="^[a-zA-Z0-9]*$", message="Must contain alphanumeric characters only")
 	private String username;
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type the Email")
 	@NotEmpty(message="Please type the Email")
 	@Email(message = "Email is not valid. The email should be in a proper email format.")
 	private String email;
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type the Password")
 	@NotEmpty(message="Please type the Password")
 	private String password;

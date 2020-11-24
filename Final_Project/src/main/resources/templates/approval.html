@@ -1,0 +1,38 @@
+<head th:replace="layout :: head"></head>
+<body>
+
+	<nav th:replace="layout :: navbar-approval"></nav>
+
+	<br>
+
+	<div class="jumbotron">
+		<h1 class="display-4">Approval Request List</h1>
+		<p class="lead">Approve / Reject requests</p>
+		<hr class="my-4">
+	</div>
+	<br>
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">Organization Name</th>
+				<th scope="col">Point of Contact</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="r:${requests}">
+				<td th:text="${r.name}"></td>
+				<td th:text="${r.poc}"></td>
+				<td>
+					<form action="#"
+						th:action="@{/viewRequest/{name}(name=${r.name})}">
+						<button type="submit" class="btn btn-primary">View Request</button>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+
+</body>
+</html>

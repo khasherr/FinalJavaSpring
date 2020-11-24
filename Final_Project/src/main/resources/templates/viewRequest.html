@@ -1,0 +1,56 @@
+<head th:replace="layout :: head"></head>
+<body>
+
+	<nav th:replace="layout :: navbar-approval"></nav>
+
+	<br>
+	
+	<div class="jumbotron">
+		<h1 class="display-4" th:text="${request.name}"></h1>
+		<p class="lead" th:text="${request.website}"></p>
+		<p class="lead" th:text="${request.address}"></p>
+		<br>
+		<hr class="my-4">
+		<br>
+		<table class="table">
+			<tbody>
+				<tr>
+					<th>Point of Contact</th>
+					<td th:text="${request.poc}"></td>
+				</tr>
+				<tr>
+					<th>Point of Contact - Email</th>
+					<td th:text="${request.email}"></td>
+				</tr>
+				<tr>
+					<th>Organization Email Domain</th>
+					<td th:text="${request.domain}"></td>
+				</tr>
+				<tr>
+					<td>
+						<form action="#"
+							th:action="@{/approveRequest/{name}(name=${request.name})}">
+							<input type="submit" value="Approve" class="btn btn-primary">
+						</form>
+					</td>
+
+					<td>
+						<form action="#"
+							th:action="@{/rejectRequest/{name}(name=${request.name})}">
+							<input type="submit" value="Reject" class="btn btn-primary">
+						</form>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<form action="#"
+							th:action="@{/approval}">
+							<input type="submit" value="Back" class="btn btn-primary">
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+</body>
+</html>

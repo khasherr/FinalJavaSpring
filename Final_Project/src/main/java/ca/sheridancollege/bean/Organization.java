@@ -5,6 +5,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,22 +21,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="application")
-//Not used anymore
-public class Application {
-
+@Table(name="approval_request")
+public class Organization {
+	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-
-	private String title;
 	private String name;
-	private String qualification;
-	private String introduction;
-	private String appliedDate;
+	private String website;
 	private String email;
-	//Values: "Accepted", "Rejected", "Not Decided"
-	private String state;
+	private String address;
+	private String poc;
+	private String domain;
+	private String code;
 
-	private int researchID;
 }

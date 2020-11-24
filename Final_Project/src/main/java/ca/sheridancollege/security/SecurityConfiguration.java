@@ -29,24 +29,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
-	
-	/*
-	 * Codes for PostgreSQL
-	@Override 
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-	
-		// authentication -> who 
-		// if you want in memory authentication than use inMemory but here I am using external db
-		// here using JDBC authentication will use jdbc authentication
-		auth.jdbcAuthentication().dataSource(dataSource)
-		//use bCryptPasswordEncoder 
-		.passwordEncoder(bCryptPasswordEncoder)
-		//get username and password the authentication part. username password enabled are columns defined in postgres
-		.usersByUsernameQuery("select username, password, enabled " + "from user_accounts where username= ?")
-		//get the roles associated with username - username and roles are columns . user_accounts is table name in postgres we defined
-		.authoritiesByUsernameQuery("select username, role " + "from user_accounts where username=?");
-	}
-	*/
 
 	//authorization-> what - add in ant matchers 
 	protected void configure(HttpSecurity http) throws Exception{ 
@@ -62,12 +44,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/").permitAll()
 		.and()
 			.formLogin()
+			.loginPage("/login")
+			.permitAll()
 		.and()
 			.logout()
 			.invalidateHttpSession(true)
 			.clearAuthentication(true)
 			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-			.logoutSuccessUrl("/")
+			.logoutSuccessUrl("/login?logout")
 			.permitAll()
 		.and()
 			.exceptionHandling()

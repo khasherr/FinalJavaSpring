@@ -4,7 +4,8 @@
 
 <nav th:replace="layout :: navbar-researchselected"></nav>
 
-
+<br>
+	<div th:each="m:${messages}" th:text="${m}" id="messages" style="font-style: itallic;"></div>
 <br>
 
 <div class="jumbotron">
@@ -23,11 +24,12 @@
 		<input type="text" th:field="*{researchArea}" size="50">
 	</div>
 	<div class="form-group">
-		<label>Research Institution</label><br>
+		<label>Research Institution (Name or Address)</label><br>
 		<div th:each="e:${errorInstitution}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="text" th:field="*{researchInstitution}" aria-describedby="institutionHelp" size="50">
-		<small id="institutionHelp" class="form-text text-muted">Write the name of the research institution
-		 your research belongs to!</small>
+		<small id="institutionHelp" class="form-text text-muted">Write the name /address of the research institution
+		 your research belongs to! <br>If you provide an address, research participants may locate the institution 
+		 <br> via Google Map! </small>
 	</div>
 	<div class="form-group">
 		<label>Research Duration</label><br>
@@ -51,6 +53,12 @@
 		<label>Number of Research participants planned</label><br>
 		<div th:each="e:${errorNumParticipants}" th:text="${e}" id="errors" style="color: red;"></div>
 		<input type="number" th:field="*{numParticipants}" size="50">
+	</div>
+	<div class="form-group">
+		<label>Video URL</label><br>
+		<input th:field="*{videoURL}" aria-describedby="URLHelp" size="50"></input>
+		<small id="URLHelp" class="form-text text-muted">Do you have a YouTube video for the research? 
+		Add the link here!</small>
 	</div>
 	<br>
 	<button type="submit" class="btn btn-primary">Register</button>

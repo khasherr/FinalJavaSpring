@@ -1,0 +1,80 @@
+<head th:replace="layout :: head"></head>
+<body>
+
+	<nav th:replace="layout :: navbar-request"></nav>
+
+	<br>
+
+
+<div class="jumbotron">
+  <h1 class="display-4">Approval Request Form</h1>
+  <p class="lead">Submit a request to get an approval for your oganization!</p>
+  
+  <p class="lead">After the request is approved, we will contact you with 
+  the provided information</p>
+  
+  <hr class="my-4">
+  
+  
+  
+  
+  <div th:each="e:${errors}" th:text="${e}" id="errors" style="color: red;"></div>
+  
+  <form action="#" th:action="@{/submitRequest}" th:object="${request}">
+  
+		<div class="form-group">
+			<label>Organization Name</label><br>
+			<div th:each="e:${errorName}" th:text="${e}" id="errors" style="color: red;"></div>
+			<input type="text" th:field="*{name}" size="50">
+		</div>
+	
+		<div class="form-group">
+			<label>Organization Website (not required)</label><br>
+			<div th:each="e:${errorWebsite}" th:text="${e}" id="errors" style="color: red;"></div>
+			<input type="text" th:field="*{website}" aria-describedby="websiteHelp" size="50">
+			<small id="websiteHelp" class="form-text text-muted">The URL of your organization website.
+			 This field is not required</small>
+		</div>
+	
+		<div class="form-group">
+			<label>Organization Address</label><br>
+			<div th:each="e:${errorAddress}" th:text="${e}" id="errors" style="color: red;"></div>
+			<input type="text" th:field="*{address}" aria-describedby="addressHelp" size="50">
+			<small id="addressHelp" class="form-text text-muted">Feel free to write in any address format!</small>
+		</div>
+		
+		<div class="form-group">
+			<label>Organization Email Domain</label><br>
+			<div th:each="e:${errorDomain}" th:text="${e}" id="errors" style="color: red;"></div>
+			<input type="text" th:field="*{domain}" aria-describedby="addressHelp" size="50">
+			<small id="addressHelp" class="form-text text-muted">An email domain is the part of an email 
+			address that comes after the @ symbol.</small>
+		</div>
+	
+		<div class="form-group">
+			<label>Point of Contact</label><br>
+			<div th:each="e:${errorPOC}" th:text="${e}" id="errors" style="color: red;"></div>
+			<input type="text" th:field="*{poc}" aria-describedby="pocHelp" size="50">
+			<small id="pocHelp" class="form-text text-muted">A Person or department name to contact</small>
+		</div>
+	
+		<div class="form-group">
+			<label>Point of Contact - Email</label><br>
+			<div th:each="e:${errorEmail}" th:text="${e}" id="errors" style="color: red;"></div>
+			<input type="text" th:field="*{email}" size="50">
+		</div>
+	
+		<br>
+	
+		<button type="submit" class="btn btn-primary">Submit the Request</button>
+	</form>
+
+	<br>
+
+	<form action="#" th:action="@{/}">
+			<input type="submit" value="Back" class="btn btn-primary">
+	</form>
+</div>
+	
+</body>
+</html>

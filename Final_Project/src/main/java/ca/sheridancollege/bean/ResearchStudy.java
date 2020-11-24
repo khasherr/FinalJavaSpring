@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -39,25 +40,31 @@ public class ResearchStudy {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) //GenerationType.AUTO
 	
 	private Integer researchStudyId;
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type the Research Title")
 	@NotEmpty(message="Please type the Research Title")
 	private String researchTitle;
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type at least one Research Area")
 	@NotEmpty(message="Please type at least one Research Area")
 	private String researchArea; 
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type your Research Institution")
 	@NotEmpty(message="Please type your Research Institution")
 	private String researchInstitution;
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type the duration in any format")
 	@NotEmpty(message="Please type the duration in any format")
 	private String researchDuration;
 	//A name of the researcher for a research
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type the Researcher Name")
 	@NotEmpty(message="Please type the Researcher Name")
 	@Pattern(regexp="^[a-zA-Z0-9,;\\-. ]*$", message="Alphanumeric characters, \",\", ; , and the whitespace are "
 			+ "allowed")
 	private String postedBy;
 	private String postedDate;
+	@NotBlank(message="Please type at least one non-whitespace character")
 	@NotNull(message="Please type the Research Details")
 	@NotEmpty(message="Please type the Researcher Details")
 	private String researchDetail;
@@ -68,6 +75,7 @@ public class ResearchStudy {
 	//A username of the account that posted the research
 	private String username;
 	private Integer applyCount;
+	private String videoURL;
 	
 	/*
 	@ManyToMany(cascade= {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST},

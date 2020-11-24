@@ -168,6 +168,31 @@ public class Functions {
 		}
 	}
 	
+	//Generate a 20 digit string
+	//Reference: 
+	//https://stackoverflow.com/questions/41107/how-to-generate-a-random-alpha-numeric-string
+	public static String getCode(int num) {
+		
+		final String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		final String lower = upper.toLowerCase();
+		final String digits = "0123456789";
+		
+		//Total of 62 characters
+		final String alphanum = upper + lower + digits;
+		
+		String code = "";
+		
+		for(int i = 0; i < num; i++) {
+			
+			int random = (int) (Math.random() * 62);
+			
+			code += alphanum.charAt(random);
+		}
+		
+		return code;
+		
+	}
+	
 	private static boolean isAdministrator(Authentication auth) {
 		
 		//Reference: https://stackoverflow.com/questions/10092882/how-can-i-get-the-current-user-roles-from-spring-security-3-1
