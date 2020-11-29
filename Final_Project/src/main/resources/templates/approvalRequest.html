@@ -17,7 +17,7 @@
 
 		<div th:each="e:${errors}" th:text="${e}" id="errors" style="color: red;"></div>
   
-  <form action="#" th:action="@{/submitRequest}" th:object="${request}">
+  <form action="#" th:action="@{/submitRequest}" method="post" th:object="${request}">
   
   
 		<div th:if="${param.requestsubmitted}" style="font-style: italic;">

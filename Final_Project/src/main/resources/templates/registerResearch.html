@@ -13,7 +13,7 @@
 		<div th:if="${param.postresearch}" style="font-style: italic;">
 		Your Research has been successfully added!</div>
 		<br>
-		<form action="#" th:action="@{/saveResearch}" th:object="${research}">
+	<form action="#" th:action="@{/saveResearch}" th:object="${research}" method="post">
 	<div class="form-group">
 		<label>Research Title</label><br>
 		<div th:each="e:${errorTitle}" th:text="${e}" id="errors" style="color: red;"></div>

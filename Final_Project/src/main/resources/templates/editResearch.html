@@ -14,7 +14,7 @@
 		<div th:if="${param.update}" style="font-style: italic;">
 		Update Successful</div>
 		<br>
-		<form action="#" th:action="@{/updateResearch}" th:object="${research}">
+		<form action="#" th:action="@{/updateResearch}" th:object="${research}" method="post">
   	<input type="hidden" th:field="*{researchStudyId}">
   	<input type="hidden" th:field="*{postedDate}">
 	<div class="form-group">

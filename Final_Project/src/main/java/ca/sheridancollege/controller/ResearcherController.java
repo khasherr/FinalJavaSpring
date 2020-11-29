@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.google.api.core.ApiFuture;
@@ -108,7 +109,7 @@ public class ResearcherController {
 	}
 	
 	//Save Researches
-	@GetMapping("/saveResearch")
+	@PostMapping("/saveResearch")
 	public String saveResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) 
 			throws InterruptedException, ExecutionException {
 		
@@ -313,7 +314,7 @@ public class ResearcherController {
 	}
 	
 	//Update research
-	@GetMapping("/updateResearch")
+	@PostMapping("/updateResearch")
 	public String updateResearch(Model model, @ModelAttribute ResearchStudy research, Authentication authentication) 
 			throws InterruptedException, ExecutionException {
 

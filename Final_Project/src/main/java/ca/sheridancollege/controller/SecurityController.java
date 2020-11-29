@@ -91,7 +91,7 @@ public class SecurityController {
 		return "verify.html";
 	}
 	
-	@GetMapping("/verifyCode")
+	@PostMapping("/verifyCode")
 	public String verifyCode(Model model, AccountHolder holder) throws InterruptedException, ExecutionException {
 		
 		String code = holder.getCode();

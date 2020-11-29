@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.Firestore;
@@ -158,8 +159,10 @@ public class ApprovalController {
 		return "viewRequest.html";
 	}
 	
-	@GetMapping("/submitRequest")
+	@PostMapping("/submitRequest")
 	public String submit(Model model, ApprovalRequest request) {
+		
+		model.addAttribute("request", request);
 		
 		//Validation
 		Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -196,8 +199,6 @@ public class ApprovalController {
 			model.addAttribute("errorEmail", errorEmail);
 			model.addAttribute("errorDomain", errorDomain);
 			
-			model.addAttribute("request", request);
-			
 			return "approvalRequest.html";
 		}
 		
@@ -215,8 +216,6 @@ public class ApprovalController {
 			errors.add(e.getMessage());
 			
 			model.addAttribute("errors", errors);
-
-			model.addAttribute("request", request);
 			
 			return "approvalRequest.html";
 		}
