@@ -24,8 +24,11 @@
 
 		<br>
 
-		<div th:if="${param.logout}" style="text-align: center;">You
+		<div th:if="${param.logout}" style="text-align: center; font-style: italic;">You
 			have been logged out.</div>
+		<div th:if="${param.register}" style="text-align: center; font-style: italic;">
+		Your account has been registered. Please login with the account.</div>
+			
 
 		<div class="row col-lg-4 col-lg-offset-4"
 			style="margin-top: 40px; background-color: #fff; padding: 20px; border: solid 1px #ddd;">

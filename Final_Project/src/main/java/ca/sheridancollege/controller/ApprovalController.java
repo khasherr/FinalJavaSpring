@@ -45,7 +45,7 @@ public class ApprovalController {
 	private static Hashtable<String, ApprovalRequest> requestTable = new Hashtable<>();
 	
 	@GetMapping("/request")
-	public String displayHome(Model model) {
+	public String request(Model model) {
 		
 		ApprovalRequest approval = new ApprovalRequest();
 		
@@ -218,14 +218,10 @@ public class ApprovalController {
 
 			model.addAttribute("request", request);
 			
-			return "approvalReqest.html";
+			return "approvalRequest.html";
 		}
 		
-		
-		
-		
-		
-		return "redirect:/";
+		return "redirect:/request?requestsubmitted";
 	}
 
 }

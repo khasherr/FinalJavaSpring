@@ -10,8 +10,11 @@
 <div class="jumbotron">
   <h1 class="display-4">Edit Research </h1>
   <p class="lead">Edit your research/study here</p>
-  <hr class="my-4">
-  <form action="#" th:action="@{/updateResearch}" th:object="${research}">
+		<hr class="my-4">
+		<div th:if="${param.update}" style="font-style: italic;">
+		Update Successful</div>
+		<br>
+		<form action="#" th:action="@{/updateResearch}" th:object="${research}">
   	<input type="hidden" th:field="*{researchStudyId}">
   	<input type="hidden" th:field="*{postedDate}">
 	<div class="form-group">

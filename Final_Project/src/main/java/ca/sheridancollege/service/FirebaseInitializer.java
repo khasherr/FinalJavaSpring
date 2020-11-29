@@ -17,7 +17,7 @@ public class FirebaseInitializer {
 	public void initialize(){
 		try {
 
-			FileInputStream serviceAccount = new FileInputStream("./capstone-c5c44-firebase-adminsdk-qpjnq-2a1217370b.json");
+			FileInputStream serviceAccount = new FileInputStream("./capstone-c5c44-firebase-adminsdk-qpjnq-7e56bdcc94.json");
 
 			FirebaseOptions options = new FirebaseOptions.Builder()
 					.setCredentials(GoogleCredentials.fromStream(serviceAccount))

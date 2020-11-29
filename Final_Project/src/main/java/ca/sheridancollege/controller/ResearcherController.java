@@ -165,15 +165,7 @@ public class ResearcherController {
 			
 		}
 		
-		//Add a message
-		List<String> messages = new ArrayList<String>();
-		messages.add("Your Research has been successfully added!");
-		
-		model.addAttribute("research", new ResearchStudy());
-		model.addAttribute("error", false);
-		model.addAttribute("messages", messages);
-		
-		return "registerResearch.html";
+		return "redirect:/registerResearch?postresearch";
 	}
 	
 	//Manage registered research
@@ -346,14 +338,14 @@ public class ResearcherController {
 
 			return "editResearch.html";
 		}
-		
+
 		firestore = FirestoreClient.getFirestore();
-		
+
 		research.setUsername(authentication.getName());
-		
+
 		firestore.collection("researchstudy").document(research.getResearchStudyId().toString()).set(research);
-		
-		return "redirect:/manageResearch";
+
+		return "redirect:/editResearch/"+ research.getResearchStudyId() +"?update";
 	}
 	
 	//View applications of a selected research

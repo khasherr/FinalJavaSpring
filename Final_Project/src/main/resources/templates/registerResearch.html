@@ -5,14 +5,15 @@
 <nav th:replace="layout :: navbar-researchselected"></nav>
 
 <br>
-	<div th:each="m:${messages}" th:text="${m}" id="messages" style="font-style: itallic;"></div>
-<br>
 
 <div class="jumbotron">
   <h1 class="display-4">Register Research </h1>
-  <p class="lead">Register your research/study here</p>
-  <hr class="my-4">
-  <form action="#" th:action="@{/saveResearch}" th:object="${research}">
+		<p class="lead">Register your research/study here</p>
+		<hr class="my-4">
+		<div th:if="${param.postresearch}" style="font-style: italic;">
+		Your Research has been successfully added!</div>
+		<br>
+		<form action="#" th:action="@{/saveResearch}" th:object="${research}">
 	<div class="form-group">
 		<label>Research Title</label><br>
 		<div th:each="e:${errorTitle}" th:text="${e}" id="errors" style="color: red;"></div>

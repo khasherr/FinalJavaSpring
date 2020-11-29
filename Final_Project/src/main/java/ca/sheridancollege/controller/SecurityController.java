@@ -127,8 +127,7 @@ public class SecurityController {
 			e.printStackTrace();
 		}
 		
-		
-		return "redirect:/";
+		return "redirect:/login?register";
 	}
 	
 	
