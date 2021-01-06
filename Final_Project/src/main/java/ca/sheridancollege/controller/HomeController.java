@@ -47,11 +47,14 @@ public class HomeController {
 		
 	}
 	
+	//Error page
+	//Page Not Found
 	@GetMapping("/error")
 	public String handleError(Model model) {
 		return "error.html";
 	}
 	
+	//Role-based Access Control
 	protected static Model add(Model model, Authentication auth, String home) {
 		
 		if(auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {

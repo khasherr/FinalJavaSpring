@@ -16,9 +16,9 @@ public class SpringMailConfig {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        //This is my Capstone test account
-        mailSender.setUsername("researvatest2@gmail.com");
-        mailSender.setPassword("Researva34049");
+        //Put your email
+        mailSender.setUsername("");
+        mailSender.setPassword("");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

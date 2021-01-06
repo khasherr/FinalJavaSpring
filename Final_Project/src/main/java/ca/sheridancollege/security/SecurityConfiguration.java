@@ -40,6 +40,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.antMatchers("/researchers/**").hasRole("USER")
 		.antMatchers("/studies/**").hasRole("ADMINISTRATOR")
 		//permit h2 console only if we are using h2-console
+		//Permit all since we are not using h2 database 
+		//to store any important data
 		.antMatchers("/h2-console/**").permitAll()
 		.antMatchers("/").permitAll()
 		.and()

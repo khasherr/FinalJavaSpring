@@ -17,6 +17,7 @@ public class EmailServiceImpl {
     @Autowired
     private JavaMailSender emailSender;
 
+    //Send the simple mail
     public void sendSimpleMessagee(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -28,6 +29,7 @@ public class EmailServiceImpl {
     @Autowired
     private TemplateEngine templateEngine;
 
+    //Send the mail with body and use the email template
     public void sendMailWithInline(String to, String subject, String name,
             String messagebody, String footer) throws MessagingException {
 

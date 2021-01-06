@@ -30,6 +30,8 @@ public class Functions {
 		
 	}
 	
+	//Fetch the documents
+	//Convert the documents to the given class objects
 	public static List<Object> getDocuments(ApiFuture<QuerySnapshot> snapshot, Class<?> classObject) 
 			throws InterruptedException, ExecutionException{
 

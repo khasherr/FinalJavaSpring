@@ -35,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		
 		List<QueryDocumentSnapshot> documents = null;
 		
-		
+		//Fetch the user account documents
 		try {
 			documents = userCollection.get().getDocuments();
 		} catch (InterruptedException e) {

@@ -135,17 +135,20 @@ public class ResearcherController {
 			return "registerResearch.html";
 		}
 		
-		
+		//Firestore
 		firestore = FirestoreClient.getFirestore();
 				
+		//Date
 		SimpleDateFormat formatter = new SimpleDateFormat("MMM dd, yyyy");
 		
 		Date date = new Date();
 		
 		research.setPostedDate(formatter.format(date));
 		
+		//Username
 		research.setUsername(authentication.getName());
 		
+		//ID
 		int numResearches = 0;
 		
 		try {
@@ -156,6 +159,7 @@ public class ResearcherController {
 		
 		research.setResearchStudyId(Functions.documentID(numResearches + 1, "researchstudy"));
 		
+		//Apply Count
 		research.setApplyCount(0);
 		
 		// Save the new user details as a document
@@ -195,6 +199,7 @@ public class ResearcherController {
 		
 		firestore = FirestoreClient.getFirestore();
 		
+		//Validations
 		boolean errorFound = false;
 		ArrayList<String> errors = new ArrayList<String>();
 		
@@ -222,12 +227,16 @@ public class ResearcherController {
 				.whereEqualTo("username", authentication.getName())
 				.get();
 		
+		//Convert all the fetched documents to the designated class
 		List<Object> researches = Functions.getDocuments(snapshot, ResearchStudy.class);
 		
+		//Search Criterias
 		model.addAttribute("criterias", Functions.getCriterias());
 		
+		//If the error is found
 		if (errorFound) {
-
+				
+			//Redirect the user back to the search page
 			model.addAttribute("researches", researches);
 
 			model.addAttribute("errors", errors);
@@ -235,6 +244,8 @@ public class ResearcherController {
 			return "manageResearch.html";
 		}
 		
+		//If there are no errors
+		//Display the outputs
 		model.addAttribute("researches", Functions.searchResearch(researches, criteria, search));
 		
 		return "manageResearch.html";
@@ -362,6 +373,7 @@ public class ResearcherController {
 				.get()
 				.getDocuments().get(0).toObject(ResearchStudy.class);
 		
+		//Fetch all the applications for the selected research
 		ApiFuture<QuerySnapshot> snapshot = firestore.collection("application")
 				.whereEqualTo("researchID", researchid)
 				.whereEqualTo("state", "Not Decided")
@@ -427,8 +439,10 @@ public class ResearcherController {
 			System.out.println(e);
 		}
 		
+		//Set the application state to Rejected
 		application.setState("Rejected");
 		
+		//Update
 		firestore.collection("application").document(Integer.toString(application.getId())).set(application);
 		
 		ApiFuture<QuerySnapshot> snapshot = firestore.collection("application")
@@ -475,7 +489,7 @@ public class ResearcherController {
 			System.out.println(e);
 		}
 		
-
+		//Update the database
 		application.setState("Accepted");
 		
 		firestore.collection("application").document(Integer.toString(application.getId())).set(application);

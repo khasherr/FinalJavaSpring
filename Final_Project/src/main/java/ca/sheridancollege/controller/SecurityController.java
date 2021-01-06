@@ -68,12 +68,16 @@ public class SecurityController {
 		
 	}
 	
+	//Display the registration options
+	//Option 0 - code
+	//Option 1 - organization domain
 	@GetMapping("/registerOptions")
 	public String registerOptions(Model model) {
 		
 		return "registerOptions.html";
 	}
 	
+	//Resend the verification code
 	@GetMapping("/resend")
 	public String resend(Model model) {
 		
@@ -91,6 +95,7 @@ public class SecurityController {
 		return "verify.html";
 	}
 	
+	//Check if the verification code matches
 	@PostMapping("/verifyCode")
 	public String verifyCode(Model model, AccountHolder holder) throws InterruptedException, ExecutionException {
 		

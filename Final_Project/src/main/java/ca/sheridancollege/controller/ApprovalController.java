@@ -45,6 +45,7 @@ public class ApprovalController {
 	
 	private static Hashtable<String, ApprovalRequest> requestTable = new Hashtable<>();
 	
+	//Display the request form
 	@GetMapping("/request")
 	public String request(Model model) {
 		
@@ -52,6 +53,7 @@ public class ApprovalController {
 		
 		model.addAttribute("request", approval);
 		
+		//Initialize the authentication instance
 		auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		model = HomeController.add(model, auth, "home");
@@ -59,6 +61,7 @@ public class ApprovalController {
 		return "approvalRequest.html";
 	}
 	
+	//Reject an organization request
 	@GetMapping("/rejectRequest/{name}")
 	public String rejectRequest(Model model, @PathVariable String name) {
 		
@@ -83,6 +86,7 @@ public class ApprovalController {
 		return "redirect:/approval";
 	}
 	
+	//Approve an organization request
 	@GetMapping("/approveRequest/{name}")
 	public String approveRequest(Model model, @PathVariable String name) throws InterruptedException {
 		
@@ -124,6 +128,7 @@ public class ApprovalController {
 		return "redirect:/approval";
 	}
 
+	//View the list of approval requests
 	@GetMapping("/approval")
 	public String approval(Model model) throws InterruptedException, ExecutionException {
 		
@@ -148,6 +153,7 @@ public class ApprovalController {
 		
 	}
 	
+	//View the details of a request
 	@GetMapping("/viewRequest/{name}")
 	public String viewRequest(Model model, @PathVariable String name) {
 		
@@ -159,6 +165,7 @@ public class ApprovalController {
 		return "viewRequest.html";
 	}
 	
+	//Submit the request
 	@PostMapping("/submitRequest")
 	public String submit(Model model, ApprovalRequest request) {
 		

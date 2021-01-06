@@ -72,6 +72,7 @@ public class ResearchController {
 
 		firestore = FirestoreClient.getFirestore();
 		
+		//Validations
 		boolean errorFound = false;
 		ArrayList<String> errors = new ArrayList<String>();
 		
@@ -95,6 +96,8 @@ public class ResearchController {
 			}
 		}
 		
+		//Process the errors
+		//Display the error messages
 		if(errorFound) {
 			
 			ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy").get();
@@ -108,7 +111,7 @@ public class ResearchController {
 			return "viewResearch.html";
 		}
 		
-		
+		//If there are no errors
 		ApiFuture<QuerySnapshot> snapshot = firestore.collection("researchstudy").get();
 
 		List<Object> researches = Functions.getDocuments(snapshot, ResearchStudy.class);

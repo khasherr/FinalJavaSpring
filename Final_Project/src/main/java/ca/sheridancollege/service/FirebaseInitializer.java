@@ -13,6 +13,10 @@ import com.google.firebase.FirebaseOptions;
 @Service
 public class FirebaseInitializer {
 
+	//Firebase Initializer
+	//The Web part needs to have an initializer
+	//Read the given JSON file which contains the given API key
+	//Connect to the Firebase service using the given information
 	@PostConstruct
 	public void initialize(){
 		try {
